@@ -131,40 +131,19 @@
       <section class="py-5 text-center container">
         <div class="row py-lg-5">
           <img class="col-lg-6 col-md-8 mx-auto">
-            <h1 class="fw-bold">Tony Wu</h1>
-            <p class="lead text-body-secondary">At Tapoly, I harnessed IT tools to analyze economic trends and assisted in preparing financial reports, enhancing my analytical prowess and financial modeling skills. My contributions supported the sales process by equipping prospective leads with essential preliminary data.
+            <h1 class="fw-bold">Job Detail</h1>
+            <p class="lead text-body-secondary">{{ job.summary }}
             </p>
-            <p>
-              <a href="https://www.linkedin.com/in/tony-wu-198574137/?locale=en_US" class="btn btn-primary my-2">LinkedIn</a>
-              <a href="https://github.com/Tony-XLZ" class="btn btn-secondary my-2">GitHub</a>
-            </p>
+            
             <div class="d-flex justify-content-center">
-              <img src="{% static 'tony.jpg' %}" style="width: auto; height: auto; max-height: 300px;">
+              <img src="{{ job.image.url }}" style="width: auto; height: auto; max-height: 300px;">
             </div>
+          <p>
+              <a href="{% url 'home' %}" class="btn btn-primary my-2">Back</a>
+            </p>
           </div>
         </div>
       </section>
-
-      <div class="album py-5 bg-body-tertiary">
-        <div class="container">
-
-          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            {% for job in jobs.all %}
-            <div class="col">
-              <a href="{% url 'detail' job.id %}">
-              <div class="card shadow-sm">
-                <img class="card-img-top" src="{{ job.image.url }}" alt="failed to load image">
-                <div class="card-body">
-                  <p class="card-text">{{ job.summary }}</p>
-                </div>
-              </div>
-              </a>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-
     </main>
 
     <script src="{% static 'jquery-3.7.1.min.js' %}"></script>
