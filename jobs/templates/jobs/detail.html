@@ -117,7 +117,7 @@
 
       .job-detail-section {
         background: #f8f9fa;
-        padding: 100px 0;
+        padding: 100px 15px; /* Reduced padding for better mobile view */
         min-height: calc(100vh - 56px - 100px); /* Adjusting for header and footer heights */
       }
 
@@ -130,12 +130,16 @@
         border-radius: 10px;
         padding: 20px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden; /* Prevent image overflow */
       }
 
       .job-image {
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         max-height: 300px;
+        max-width: 100%; /* Make sure the image fits within the container */
+        height: auto;
+        width: auto;
       }
 
       .job-detail-section h1 {
@@ -146,7 +150,8 @@
       .job-detail-section p.lead {
         font-size: 1.2rem;
         line-height: 1.6;
-        text-align: justify;
+        text-align: left; /* Changed text alignment to left */
+        margin: 0 10px; /* Add margin to text for better spacing on small screens */
       }
 
       footer {
