@@ -2,7 +2,7 @@
 
 ## Project Description
 
-**tonywu.info** is a personal website designed to showcase the author's projects and blog posts. The target audience includes those interested in learning about the author's professional skills, project experience, and viewpoints. The project page displays various completed projects, while the blog page provides in-depth discussions on different topics.
+**tonywu.info** is a personal website designed to showcase the author's projects and blog posts. The target audience includes those interested in learning about the author's professional skills, project experience, and viewpoints. The project page displays various completed projects, while the blog page provides in-depth discussions on different topics. You can follow the instructions to build your own version.
 
 ## Project Structure
 
@@ -95,14 +95,14 @@ Create or edit the Nginx configuration file for the project in `/etc/nginx/sites
 ```nginx
 server {
     listen 80;
-    server_name <YOUR_IP_ADDRESS> tonywu.info www.tonywu.info;
+    server_name <YOUR_IP_ADDRESS> <YOUR_DOMAIN> www.<YOUR_DOMAIN>;
 
     return 301 https://$host$request_uri;
 }
 
 server {
     listen 443 ssl;
-    server_name tonywu.info www.tonywu.info;
+    server_name <YOUR_DOMAIN> www.<YOUR_DOMAIN>;
 
     ssl_certificate /etc/letsencrypt/live/<YOUR_DOMAIN>/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/<YOUR_DOMAIN>/privkey.pem; # managed by Certbot
