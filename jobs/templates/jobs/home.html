@@ -38,45 +38,10 @@
         flex: 1;
       }
 
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
-
       @media (min-width: 768px) {
         .bd-placeholder-img-lg {
           font-size: 3.5rem;
         }
-      }
-
-      .b-example-divider {
-        width: 100%;
-        height: 3rem;
-        background-color: rgba(0, 0, 0, .1);
-        border: solid rgba(0, 0, 0, .15);
-        border-width: 1px 0;
-        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
-      }
-
-      .b-example-vr {
-        flex-shrink: 0;
-        width: 1.5rem;
-        height: 100vh;
-      }
-
-      .bi {
-        vertical-align: -.125em;
-        fill: currentColor;
-      }
-
-      .nav-scroller {
-        position: relative;
-        z-index: 2;
-        height: 2.75rem;
-        overflow-y: hidden;
       }
 
       .nav-scroller .nav {
@@ -88,23 +53,6 @@
         text-align: center;
         white-space: nowrap;
         -webkit-overflow-scrolling: touch;
-      }
-
-      .btn-bd-primary {
-        --bd-violet-bg: #712cf9;
-        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
-
-        --bs-btn-font-weight: 600;
-        --bs-btn-color: var(--bs-white);
-        --bs-btn-bg: var(--bd-violet-bg);
-        --bs-btn-border-color: var(--bd-violet-bg);
-        --bs-btn-hover-color: var(--bs-white);
-        --bs-btn-hover-bg: #6528e0;
-        --bs-btn-hover-border-color: #6528e0;
-        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
-        --bs-btn-active-color: var(--bs-btn-hover-color);
-        --bs-btn-active-bg: #5a23c8;
-        --bs-btn-active-border-color: #5a23c8;
       }
 
       .bd-mode-toggle {
@@ -133,6 +81,23 @@
       .card-img-top {
         height: 200px;
         object-fit: cover;
+      }
+
+      .card-link {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .card-link .card-text,
+      .card-link .card-title {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .card-link:hover .card {
+        transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
       }
 
       footer {
@@ -211,13 +176,37 @@
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             {% for job in jobs.all %}
             <div class="col">
-              <a href="{% url 'detail' job.id %}">
-              <div class="card shadow-sm">
-                <img class="card-img-top" src="{{ job.image.url }}" alt="{{ job.summary }}">
-                <div class="card-body">
-                  <p class="card-text">{{ job.summary }}</p>
+              <a href="{% url 'detail' job.id %}" class="card-link">
+                <div class="card shadow-sm">
+                  <img class="card-img-top" src="{{ job.image.url }}" alt="{{ job.summary }}">
+                  <div class="card-body">
+                    <p class="card-text">{{ job.summary }}</p>
+                  </div>
                 </div>
-              </div>
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+            <!-- Blogs Section -->
+      <div class="album py-5 bg-light" id="blogs">
+        <div class="container">
+          <h2 class="text-center mb-4">Blogs</h2>
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for blog in blogs %}
+            <div class="col">
+              <a href="{% url 'blog_detail' blog.id %}" class="card-link">
+                <div class="card shadow-sm">
+                  {% if blog.image %}
+                    <img class="card-img-top" src="{{ blog.image.url }}" alt="{{ blog.title }}">
+                  {% endif %}
+                  <div class="card-body">
+                    <h5 class="card-title">{{ blog.title }}</h5>
+                    <p class="card-text">{{ blog.content|truncatewords:20|safe }}</p>
+                  </div>
+                </div>
               </a>
             </div>
             {% endfor %}

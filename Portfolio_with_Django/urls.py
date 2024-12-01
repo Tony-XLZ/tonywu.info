@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 import jobs.views
+import blogs.views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -24,6 +25,7 @@ urlpatterns = ([
     path("secret-admin-panel-tonyxlz/", admin.site.urls),
     path("", jobs.views.home, name="home"),
     path('jobs/<int:job_id>', jobs.views.detail, name="detail"),
+    path('blogs/<int:blog_id>/', blogs.views.blog_detail, name="blog_detail"),
 ])
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
