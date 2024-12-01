@@ -56,6 +56,16 @@ MIDDLEWARE = [
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'extraPlugins': ','.join(['codesnippet']),
+        'codeSnippet_theme': 'github-dark-dimmed',
+        'height': 300,
+        'width': '100%',
+    },
+}
+
 ROOT_URLCONF = "Portfolio_with_Django.urls"
 
 TEMPLATES = [

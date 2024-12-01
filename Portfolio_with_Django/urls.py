@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 import jobs.views
 import blogs.views
 from django.conf import settings
@@ -26,6 +26,7 @@ urlpatterns = ([
     path("", jobs.views.home, name="home"),
     path('jobs/<int:job_id>', jobs.views.detail, name="detail"),
     path('blogs/<int:blog_id>/', blogs.views.blog_detail, name="blog_detail"),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 ])
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

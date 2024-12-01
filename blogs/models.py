@@ -1,10 +1,10 @@
 from django.db import models
-from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 
 # Create your models here.
 class Blog(models.Model):
     title = models.CharField(max_length=200)
-    content = RichTextField()
+    content = RichTextUploadingField()
     image = models.ImageField(upload_to='blog_images/')
     published_date = models.DateTimeField(auto_now_add=True)
 
