@@ -20,16 +20,23 @@ import jobs.views
 import blogs.views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.sitemaps.views import sitemap
+from sitemap import StaticViewSitemap, BlogSitemap, ProjectSitemap
 
-urlpatterns = ([
+sitemaps = {
+    'static': StaticViewSitemap,
+    'blogs': BlogSitemap,
+    'projects': ProjectSitemap,
+}
+
+urlpatterns = [
     path("secret-admin-panel-tonyxlz/", admin.site.urls),
     path("", jobs.views.home, name="home"),
-    path('jobs/<int:job_id>', jobs.views.detail, name="detail"),
+    path('jobs/<int:job_id>/', jobs.views.detail, name="detail"),
     path('blogs/<int:blog_id>/', blogs.views.blog_detail, name="blog_detail"),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-])
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
+]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
