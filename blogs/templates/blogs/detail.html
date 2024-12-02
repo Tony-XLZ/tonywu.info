@@ -225,6 +225,7 @@
         <div class="row py-lg-5">
           <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="fw-bold">{{ blog.title }}</h1>
+            <p class="text-muted" style="color: grey;">Posted on {{ blog.published_date|date:"F j, Y" }}</p>
             <br/><br/>
             {% if blog.image %}
             <div class="blog-image-container d-flex justify-content-center">

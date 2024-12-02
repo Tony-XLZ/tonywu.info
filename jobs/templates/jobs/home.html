@@ -204,7 +204,7 @@
                   {% endif %}
                   <div class="card-body">
                     <h5 class="card-title">{{ blog.title }}</h5>
-                    <p class="card-text">{{ blog.content|truncatewords:20|safe }}</p>
+                    <p class="card-text" style="font-size: 0.875rem; color: grey;">{{ blog.published_date|date:"F j, Y" }}</p>
                   </div>
                 </div>
               </a>
