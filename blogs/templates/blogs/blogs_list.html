@@ -1,20 +1,18 @@
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
 {% load static %}
-  <head>
-    <script src="/docs/5.3/assets/js/color-modes.js"></script>
+  <head><script src="/docs/5.3/assets/js/color-modes.js"></script>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Blog Detail Page">
+    <meta name="description" content="Tony Wu's professional portfolio">
     <meta name="author" content="Tony Wu">
     <meta name="generator" content="Hugo 0.122.0">
-    <title>Blog Detail - Tony Wu</title>
+    <title>Blogs</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/album/">
     <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/monokai.min.css" rel="stylesheet">
 
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
@@ -40,10 +38,9 @@
         flex: 1;
       }
 
-      @media (max-width: 576px) {
-        .blog-detail-section h1 {
-          font-size: 1.8rem !important; /* Reduce font size for small screens */
-          line-height: 1.2 !important; /* Adjust line height for better readability */
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
         }
       }
 
@@ -58,55 +55,49 @@
         -webkit-overflow-scrolling: touch;
       }
 
+      .bd-mode-toggle {
+        z-index: 1500;
+      }
+
       .bd-mode-toggle .dropdown-menu .active .bi {
         display: block !important;
       }
 
-      .blog-detail-section {
-        background: #f8f9fa;
-        padding: 100px 15px;
-        min-height: calc(100vh - 56px - 100px);
+      .hero-section {
+        background-image: url('{% static "hero.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        color: #fff;
+        padding: 0px 0;
+        text-align: center;
       }
 
-      .blog-detail-section .container {
-        max-width: 800px;
-      }
-
-      .blog-image-container {
-        background: #fff;
-        border-radius: 10px;
-        padding: 20px;
+      .profile-image {
+        border-radius: 50%;
+        border: 5px solid #fff;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
       }
 
-      .blog-image {
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        max-height: 300px;
-        max-width: 100%;
-        height: auto;
-        width: auto;
+      .card-img-top {
+        height: 200px;
+        object-fit: cover;
       }
 
-      .blog-detail-section h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
+      .card-link {
+        text-decoration: none;
+        color: inherit;
       }
 
-      .blog-content {
-        text-align: left;
-        line-height: 1.6;
-        margin: 20px 0;
-        font-size: 1.1rem;
-        color: #333;
+      .card-link .card-text,
+      .card-link .card-title {
+        text-decoration: none;
+        color: inherit;
       }
 
-      .blog-content img {
-        max-width: 100%;
-        height: auto;
-          display: block;
-          margin: 20px auto;
+      .card-link:hover .card {
+        transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
       }
 
       footer {
@@ -145,7 +136,7 @@
   </head>
   <body>
     <header>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
           <a class="navbar-brand" href="{% url 'home' %}">Tony Wu</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -155,7 +146,6 @@
             <ul class="navbar-nav ms-auto">
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'home' %}">Home</a>
-              </li>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="/jobs/">Projects</a>
@@ -173,27 +163,33 @@
     </header>
 
     <main>
-      <section class="blog-detail-section text-center container">
-        <div class="row py-lg-5">
-          <div class="col-lg-6 col-md-8 mx-auto">
-            <h1 class="fw-bold">{{ blog.title }}</h1>
-            <p class="text-muted" style="color: grey;">Posted on {{ blog.published_date|date:"F j, Y" }}</p>
-            <br/><br/>
-            {% if blog.image %}
-            <div class="blog-image-container d-flex justify-content-center">
-              <img src="{{ blog.image.url }}" class="blog-image" alt="{{ blog.title }}">
+      <div class="album py-5 bg-light">
+        <div class="container">
+          <h2 class="text-center mb-4">Blogs</h2>
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for blog in blogs %}
+            <div class="col">
+              <a href="{% url 'blog_detail' blog.id %}" class="card-link">
+                <div class="card shadow-sm">
+                  {% if blog.image %}
+                  <img class="card-img-top" src="{{ blog.image.url }}" alt="{{ blog.title }}">
+                  {% endif %}
+                  <div class="card-body">
+                    <h5 class="card-title">{{ blog.title }}</h5>
+                    <p class="card-text" style="color: grey; font-size: 0.875rem;">{{ blog.published_date|date:"F j, Y" }}</p>
+                    <p class="card-text">{{ blog.summary|truncatewords:20 }}</p>
+                  </div>
+                </div>
+              </a>
             </div>
-            {% endif %}
-            <div class="blog-content">
-              {{ blog.content|safe }}
-            </div>
-            <br/><br/>
-            <p>
-              <a href="{% url 'blogs_list' %}" class="btn btn-primary btn-lg my-4">Back to Blogs</a>
-            </p>
+            {% endfor %}
           </div>
+          <br/><br/>
+          <p class="d-flex justify-content-center">
+            <a href="{% url 'home' %}" class="btn btn-primary btn-lg my-4">Back to Home</a>
+          </p>
         </div>
-      </section>
+      </div>
     </main>
 
     <footer class="text-center py-4">
@@ -207,7 +203,5 @@
     <script src="{% static 'jquery-3.7.1.min.js' %}"></script>
     <script src="{% static 'popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
-    <script>hljs.highlightAll();</script>
   </body>
 </html>

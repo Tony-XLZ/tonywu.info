@@ -32,7 +32,9 @@ sitemaps = {
 urlpatterns = [
     path("secret-admin-panel-tonyxlz/", admin.site.urls),
     path("", jobs.views.home, name="home"),
-    path('jobs/<int:job_id>/', jobs.views.detail, name="detail"),
+    path('jobs/', jobs.views.jobs_list, name='jobs_list'),
+    path('jobs/<int:job_id>/', jobs.views.job_detail, name="job_detail"),
+    path('blogs/', blogs.views.blogs_list, name='blogs_list'),
     path('blogs/<int:blog_id>/', blogs.views.blog_detail, name="blog_detail"),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),

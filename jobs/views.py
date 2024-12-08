@@ -8,6 +8,10 @@ def home(request):
     blogs = Blog.objects.all()
     return render(request, 'jobs/home.html', {'jobs': jobs, 'blogs': blogs})
 
-def detail(request, job_id):
-    job_detail = get_object_or_404(Job, pk=job_id)
-    return render(request, 'jobs/detail.html', {'job': job_detail})
+def jobs_list(request):
+    jobs = Job.objects.all().order_by('-published_date')
+    return render(request, 'jobs/jobs_list.html', {'jobs': jobs})
+
+def job_detail(request, job_id):
+    job = get_object_or_404(Job, pk=job_id)
+    return render(request, 'jobs/detail.html', {'job': job})

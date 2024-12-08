@@ -100,6 +100,21 @@
         transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
       }
 
+      .more-button {
+        background-color: rgb(63, 113, 250);
+        border: none;
+        color: #ffffff;
+        padding: 10px 20px;
+        margin-top: 20px;
+        text-transform: none;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
+
+      .more-button:hover {
+        background-color: rgba(255, 255, 255, 0.9);
+      }
+
       footer {
         flex-shrink: 0;
         background: #343a40;
@@ -148,6 +163,12 @@
                 <a class="nav-link" href="#about">About</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link" href="/jobs/">Projects</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/blogs/">Blogs</a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" href="mailto:zhenxun.wu.23@ucl.ac.uk">Email Me</a>
               </li>
             </ul>
@@ -164,7 +185,7 @@
               <img src="{% static 'tony.jpg' %}" class="profile-image mb-4" style="max-height: 200px; width: auto;" alt="Tony Wu">
               <br/><br/>
               <h2 class="fw-bold" style="color: #000">About Me</h2>
-              <p class="lead" style="color: #000"> Recent graduate with degrees in Finance from Queen's University Belfast and Technology Policy from University College London. Experienced as a Financial Assistant in London and a Researcher in China, specializing in data visualization and financial analysis. Proficient in Python, R, SQL, and various data analytics tools, with professional certifications in Data Analytics. Enjoy photography and hiking. </p>
+              <p class="lead" style="color: #000"> I'm Tony Wu, a recent graduate with degrees in Finance from Queen's University Belfast and Technology Policy from University College London. Experienced as a Financial Assistant in London and a Researcher in China, specializing in data visualization and financial analysis. Proficient in Python, R, SQL, and various data analytics tools, with professional certificates in Data Analytics. Enjoy open source programming, photography and hiking at leisure. </p>
             </div>
           </div>
         </div>
@@ -174,9 +195,9 @@
         <div class="container">
           <h2 class="text-center mb-4">Projects</h2>
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            {% for job in jobs.all %}
+            {% for job in jobs.all|slice:":3" %}
             <div class="col">
-              <a href="{% url 'detail' job.id %}" class="card-link">
+              <a href="{% url 'job_detail' job.id %}" class="card-link">
                 <div class="card shadow-sm">
                   <img class="card-img-top" src="{{ job.image.url }}" alt="{{ job.summary }}">
                   <div class="card-body">
@@ -187,6 +208,9 @@
             </div>
             {% endfor %}
           </div>
+          <div class="text-center">
+            <a href="/jobs/" class="btn more-button">More Projects</a>
+          </div>
         </div>
       </div>
 
@@ -195,7 +219,7 @@
         <div class="container">
           <h2 class="text-center mb-4">Blogs</h2>
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            {% for blog in blogs %}
+            {% for blog in blogs|slice:":3" %}
             <div class="col">
               <a href="{% url 'blog_detail' blog.id %}" class="card-link">
                 <div class="card shadow-sm">
@@ -210,6 +234,9 @@
               </a>
             </div>
             {% endfor %}
+          </div>
+          <div class="text-center">
+            <a href="/blogs/" class="btn more-button">More Blogs</a>
           </div>
         </div>
       </div>
