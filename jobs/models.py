@@ -12,4 +12,4 @@ class Job(models.Model):
         return self.summary
 
     def get_absolute_url(self):
-        return reverse('detail', args=[self.id])
+        return reverse('job_detail', args=[self.id])
