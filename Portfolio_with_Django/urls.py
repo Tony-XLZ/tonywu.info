@@ -29,6 +29,11 @@ sitemaps = {
     'projects': ProjectSitemap,
 }
 
+def custom_sitemap(request, sitemaps, **kwargs):
+    response = sitemap(request, sitemaps, **kwargs)
+    response['X-Robots-Tag'] = ''
+    return response
+
 urlpatterns = [
     path("secret-admin-panel-tonyxlz/", admin.site.urls),
     path("", jobs.views.home, name="home"),
@@ -37,7 +42,7 @@ urlpatterns = [
     path('blogs/', blogs.views.blogs_list, name='blogs_list'),
     path('blogs/<int:blog_id>/', blogs.views.blog_detail, name="blog_detail"),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
+    path('sitemap.xml', custom_sitemap, {'sitemaps': sitemaps}, name='sitemap'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
