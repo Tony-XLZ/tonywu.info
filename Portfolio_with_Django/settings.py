@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['134.209.177.229', 'tonywu.info', 'www.tonywu.info', '127.0.0.1
 # Application definition
 
 INSTALLED_APPS = [
+    "simpleui",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
