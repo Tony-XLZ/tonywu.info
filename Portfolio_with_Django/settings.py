@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+from decouple import config
 import os.path
 from pathlib import Path
 
@@ -20,12 +21,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-$0-z==m@!6%d+3)=l3c8djaeg_qz#avbawa9lzsag98e#!juox"
+SECRET_KEY = config("DJANGO_SECRET_KEY", default="unsafe-secret-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = ['134.209.177.229', 'tonywu.info', 'www.tonywu.info', '127.0.0.1']
+allowed_hosts_str = config("DJANGO_ALLOWED_HOSTS", default="127.0.0.1")
+ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_str.split(",")]
 
 
 # Application definition
@@ -91,15 +93,14 @@ WSGI_APPLICATION = "Portfolio_with_Django.wsgi.application"
 
 
 # Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "portfoliodb",
-        "USER": "portfoliouser",
-        "PASSWORD": "001015",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "NAME": config("DB_NAME", default="mydb"),
+        "USER": config("DB_USER", default="myuser"),
+        "PASSWORD": config("DB_PASSWORD", default="mypassword"),
+        "HOST": config("DB_HOST", default="localhost"),
+        "PORT": config("DB_PORT", default="5432"),
     }
 }
 
