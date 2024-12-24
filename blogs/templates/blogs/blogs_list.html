@@ -2,443 +2,504 @@
 <html lang="en" data-bs-theme="auto">
 {% load static %}
 
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Tony Wu's Blog List Page" />
-    <meta name="author" content="Tony Wu" />
-    <meta name="generator" content="Hugo 0.122.0" />
-    <title>Blogs</title>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Tony Wu's Blog List Page" />
+  <meta name="author" content="Tony Wu" />
+  <meta name="generator" content="Hugo 0.122.0" />
+  <title>Blogs</title>
 
-    <!-- Bootstrap 样式 -->
-    <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet" />
+  <!-- Bootstrap CSS link -->
+  <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet" />
 
-    <!-- Bootstrap Icons，用于箭头图标 -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-    />
+  <!-- Bootstrap Icons for arrow icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+  />
 
-    <!-- 其他 CSS 或外部库 -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@docsearch/css@3"
-    />
+  <!-- Additional CSS or external libraries -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@docsearch/css@3"
+  />
 
-    <!-- Favicons 等 -->
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="{% static 'apple-touch-icon.png' %}"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="{% static 'favicon-32x32.png' %}"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="{% static 'favicon-16x16.png' %}"
-    />
-    <link
-      rel="manifest"
-      href="{% static 'site.webmanifest' %}"
-    />
-    <link
-      rel="mask-icon"
-      href="{% static 'safari-pinned-tab.svg' %}"
-      color="F8F9FAFF"
-    />
-    <link
-      rel="icon"
-      href="{% static 'favicon.ico' %}"
-      type="image/x-icon"
-    />
-    <meta name="theme-color" content="F8F9FAFF" />
+  <!-- Favicons and related configurations -->
+  <link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="{% static 'apple-touch-icon.png' %}"
+  />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="32x32"
+    href="{% static 'favicon-32x32.png' %}"
+  />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16x16"
+    href="{% static 'favicon-16x16.png' %}"
+  />
+  <link
+    rel="manifest"
+    href="{% static 'site.webmanifest' %}"
+  />
+  <link
+    rel="mask-icon"
+    href="{% static 'safari-pinned-tab.svg' %}"
+    color="F8F9FAFF"
+  />
+  <link
+    rel="icon"
+    href="{% static 'favicon.ico' %}"
+    type="image/x-icon"
+  />
+  <meta name="theme-color" content="F8F9FAFF" />
 
-    <style>
-      /* ============ 基础布局 ============ */
-      html, body {
-        height: 100%;
-      }
-      body {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
-      main {
-        flex: 1;
-        padding: 50px 0;
-      }
+  <style>
+    /* Basic layout settings */
+    html,
+    body {
+      height: 100%;
+    }
 
-      /* ============ 导航右对齐 ============ */
-      /* 在桌面和移动端都右对齐 */
-      .navbar-nav.ms-auto {
-        text-align: right; /* 强制菜单文字右对齐 */
-      }
-      /* 让菜单项之间有点空隙 */
-      .navbar-nav.ms-auto > li {
-        margin-left: 1rem;
-      }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-      /* ============ 去除子菜单的圆点 & 闪烁 ============ */
-      .list-unstyled, ul[list-unstyled], .list-unstyled ul {
-        list-style: none !important;
-        margin: 0;
-        padding: 0;
-      }
+    main {
+      flex: 1;
+      padding: 50px 0;
+    }
 
-      /* 有时 collapse 在加载时会短暂出现 .collapsing；可去掉过渡减少闪烁 */
-      .collapsing {
-        transition: none !important; /* 禁用默认过渡动画 */
-      }
+    /* Right-aligned navigation for both desktop and mobile views */
+    .navbar-nav.ms-auto {
+      text-align: right; /* Ensures text alignment to the right */
+    }
+    /* Spacing between navigation items */
+    .navbar-nav.ms-auto > li {
+      margin-left: 1rem;
+    }
 
-      /* ============ 调整子菜单的内边距，紧凑一些 ============ */
-      .submenu-item {
-        margin: 0.2rem 0;     /* 上下间距 */
-        padding: 0 0.6rem;    /* 左右内边距 */
-      }
+    /* Remove list styling and flickering for submenus */
+    .list-unstyled,
+    ul[list-unstyled],
+    .list-unstyled ul {
+      list-style: none !important;
+      margin: 0;
+      padding: 0;
+    }
 
-      /* ============ 其余页面内容 ============ */
-      @media (max-width: 768px) {
-        .tag-cloud-section {
-          margin-top: 20px;
-        }
-        .col-md-3 {
-          order: 2;
-        }
-        .col-md-9 {
-          order: 1;
-        }
-      }
-      @media (min-width: 768px) {
-        .row {
-          display: flex;
-        }
-        .col-md-3 {
-          flex: 0 0 25%;
-        }
-        .col-md-9 {
-          flex: 0 0 75%;
-        }
-      }
-      .nav-scroller .nav {
-        display: flex;
-        flex-wrap: nowrap;
-        padding-bottom: 1rem;
-        margin-top: -1px;
-        overflow-x: auto;
-        text-align: center;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
-      }
+    /* Disable default transitions to reduce flickering */
+    .collapsing {
+      transition: none !important; /* Disables default transition animations */
+    }
 
-      /* 卡片 hover 效果、footer 等保持原有 */
-      .card-img-top {
-        height: 200px;
-        object-fit: cover;
-      }
+    /* Adjust submenu padding for a more compact look */
+    .submenu-item {
+      margin: 0.2rem 0;
+      padding: 0 0.6rem;
+    }
 
-      .card-link {
-        text-decoration: none;
-        color: inherit;
+    /* Responsive adjustments for small screens */
+    @media (max-width: 768px) {
+      .tag-cloud-section {
+        margin-top: 20px;
       }
+      .col-md-4 {
+        order: 2;
+      }
+      .col-md-8 {
+        order: 1;
+      }
+    }
 
-      .card-link .card-text,
-      .card-link .card-title {
-        text-decoration: none;
-        color: inherit;
-      }
+    /* Maintain hover effects and footer styles */
+    .card-img-top {
+      height: 200px;
+      object-fit: cover;
+    }
+    .card-link {
+      text-decoration: none;
+      color: inherit;
+    }
+    .card-link .card-text,
+    .card-link .card-title {
+      text-decoration: none;
+      color: inherit;
+    }
+    .card-link:hover .card {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
 
-      .card-link:hover .card {
-        transform: scale(1.05);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-      }
+    footer {
+      flex-shrink: 0;
+      background: #343a40;
+      color: #fff;
+      padding: 20px 0;
+      width: 100%;
+    }
+    footer a {
+      color: #ffffff;
+    }
+    footer a.btn {
+      background-color: #ffffff;
+      color: #343a40;
+      border: none;
+    }
+    footer a.btn-outline-primary:hover {
+      background-color: #3867c0;
+    }
+    footer a.btn-outline-secondary:hover {
+      background-color: #28a745;
+    }
+    footer .btn-outline-primary,
+    footer .btn-outline-secondary {
+      padding: 10px 20px;
+      margin: 10px 5px;
+    }
+  </style>
+</head>
 
-      footer {
-        flex-shrink: 0;
-        background: #343a40;
-        color: #fff;
-        padding: 20px 0;
-        width: 100%;
-      }
-      footer a {
-        color: #ffffff;
-      }
-      footer a.btn {
-        background-color: #ffffff;
-        color: #343a40;
-        border: none;
-      }
-      footer a.btn-outline-primary:hover {
-        background-color: #3867c0;
-      }
-      footer a.btn-outline-secondary:hover {
-        background-color: #28a745;
-      }
-      footer .btn-outline-primary,
-      footer .btn-outline-secondary {
-        padding: 10px 20px;
-        margin: 10px 5px;
-      }
-    </style>
-  </head>
+<body>
+  <!-- Header / Navbar section -->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+      <div class="container-fluid">
+        <!-- Brand on the left -->
+        <a class="navbar-brand" href="{% url 'home' %}">
+          Tony Wu
+        </a>
 
-  <body>
-    <!-- ============ Header / Navbar ============ -->
-    <header>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
-        <div class="container-fluid">
-          <!-- 左侧品牌 -->
-          <a class="navbar-brand" href="{% url 'home' %}">
-            Tony Wu
-          </a>
+        <!-- Toggler for mobile navigation -->
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-          <!-- 移动端折叠按钮 -->
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-
-          <!-- 右侧菜单 -->
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto list-unstyled">
-              <!-- Categories：用 .nav-link 保持外观一致 -->
-              <li class="nav-item">
-                <a
-                  class="nav-link d-flex align-items-center justify-content-end"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#categoriesCollapse"
-                  role="button"
-                  aria-expanded="false"
-                  aria-controls="categoriesCollapse"
-                  style="gap: 0.3rem;"
-                >
-                  Categories
-                  <i class="bi bi-chevron-down"></i>
-                </a>
-                <!-- 子菜单折叠 -->
-                <div class="collapse" id="categoriesCollapse">
-                  <ul class="list-unstyled text-end" style="padding-right: 1rem;">
-                    {% for category in categories %}
-                    <li class="submenu-item">
-                      <div class="d-flex align-items-center justify-content-end">
-                        <!-- 分类名链接 -->
-                        <a href="{{ category.get_absolute_url }}" class="nav-link p-0 me-1">
-                          {{ category.name }}
-                        </a>
-                        <!-- 如果有子分类，加一个箭头折叠 -->
-                        {% if category.subcategories.all %}
-                        <a
-                          class="nav-link p-0"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#subcat{{ category.id }}"
-                          aria-expanded="false"
-                          aria-controls="subcat{{ category.id }}"
-                          style="line-height: 1; color: inherit;"
-                        >
-                          <i class="bi bi-chevron-down"></i>
-                        </a>
-                        {% endif %}
-                      </div>
+        <!-- Navigation items on the right -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto list-unstyled">
+            <!-- Categories navigation with dropdown -->
+            <li class="nav-item">
+              <a
+                class="nav-link d-flex align-items-center justify-content-end"
+                data-bs-toggle="collapse"
+                data-bs-target="#categoriesCollapse"
+                role="button"
+                aria-expanded="false"
+                aria-controls="categoriesCollapse"
+                style="gap: 0.3rem;"
+              >
+                Categories
+                <i class="bi bi-chevron-down"></i>
+              </a>
+              <!-- Submenu dropdown for categories -->
+              <div class="collapse" id="categoriesCollapse">
+                <ul class="list-unstyled text-end" style="padding-right: 1rem;">
+                  {% for category in categories %}
+                  <li class="submenu-item">
+                    <div class="d-flex align-items-center justify-content-end">
+                      <!-- Category link -->
+                      <a href="{{ category.get_absolute_url }}" class="nav-link p-0 me-1">
+                        {{ category.name }}
+                      </a>
+                      <!-- Dropdown for subcategories, if available -->
                       {% if category.subcategories.all %}
-                      <div class="collapse" id="subcat{{ category.id }}" style="padding-right: 1rem;">
-                        <ul class="list-unstyled text-end">
-                          {% for subcat in category.subcategories.all %}
-                          <li class="submenu-item">
-                            <a href="{{ subcat.get_absolute_url }}" class="nav-link p-0">
-                              {{ subcat.name }}
-                            </a>
-                          </li>
-                          {% endfor %}
-                        </ul>
-                      </div>
+                      <a
+                        class="nav-link p-0"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#subcat{{ category.id }}"
+                        aria-expanded="false"
+                        aria-controls="subcat{{ category.id }}"
+                        style="line-height: 1; color: inherit;"
+                      >
+                        <i class="bi bi-chevron-down"></i>
+                      </a>
                       {% endif %}
-                    </li>
-                    {% endfor %}
-                  </ul>
-                </div>
-              </li>
-
-              <!-- 其它菜单项 (Home, Projects, Blogs, Email Me) -->
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'home' %}">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/jobs/">Projects</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/blogs/">Blogs</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="mailto:zhenxun.wu.23@ucl.ac.uk">Email Me</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </header>
-
-    <!-- ============ Main Content ============ -->
-    <main>
-      <div class="album py-5 bg-light">
-        <div class="container">
-          <div class="row">
-            <!-- 左侧主内容 -->
-            <div class="col-md-9">
-              <h2 class="text-center mb-4">Blogs</h2>
-              <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                {% for blog in page_obj %}
-                <div class="col">
-                  <a
-                    href="{% url 'blog_detail' blog.id %}?page={{ page_obj.number }}"
-                    class="card-link"
-                  >
-                    <div class="card shadow-sm">
-                      {% if blog.image %}
-                      <img
-                        class="card-img-top"
-                        src="{{ blog.image.url }}"
-                        alt="{{ blog.title }}"
-                      />
-                      {% endif %}
-                      <div class="card-body">
-                        <h5 class="card-title">{{ blog.title }}</h5>
-                        <p class="card-text" style="color: grey; font-size: 0.875rem;">
-                          {{ blog.published_date|date:"F j, Y" }}
-                        </p>
-                        <p class="card-text">
-                          {{ blog.summary|truncatewords:20 }}
-                        </p>
-                      </div>
                     </div>
-                  </a>
-                </div>
-                {% endfor %}
+                    {% if category.subcategories.all %}
+                    <div class="collapse" id="subcat{{ category.id }}" style="padding-right: 1rem;">
+                      <ul class="list-unstyled text-end">
+                        {% for subcat in category.subcategories.all %}
+                        <li class="submenu-item">
+                          <a href="{{ subcat.get_absolute_url }}" class="nav-link p-0">
+                            {{ subcat.name }}
+                          </a>
+                        </li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                    {% endif %}
+                  </li>
+                  {% endfor %}
+                </ul>
               </div>
+            </li>
 
-              <!-- 分页 -->
-              <div class="d-flex justify-content-center mt-4">
-                <nav aria-label="Page navigation">
-                  <ul class="pagination">
-                    <!-- Previous Page -->
-                    {% if page_obj.has_previous %}
-                    <li class="page-item">
-                      <a
-                        class="page-link"
-                        href="?page={{ page_obj.previous_page_number }}"
-                        aria-label="Previous"
-                      >
-                        <span aria-hidden="true">&laquo;</span>
-                      </a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disabled">
-                      <span class="page-link">&laquo;</span>
-                    </li>
-                    {% endif %}
+            <!-- Other menu items (Home, Projects, Blogs, Email Me) -->
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/jobs/">Projects</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/blogs/">Blogs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="mailto:zhenxun.wu.23@ucl.ac.uk">Email Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
 
-                    <!-- Page Numbers -->
-                    {% for num in page_obj.paginator.page_range %}
-                    {% if page_obj.number == num %}
-                    <li class="page-item active">
-                      <span class="page-link">{{ num }}</span>
-                    </li>
-                    {% else %}
-                    <li class="page-item">
-                      <a class="page-link" href="?page={{ num }}">
-                        {{ num }}
-                      </a>
-                    </li>
+  <!-- Main content section -->
+  <main>
+    <div class="album py-5 bg-light">
+      <div class="container">
+        <!-- Use row align-items-start + gx-5 to increase column spacing and align top -->
+        <div class="row align-items-start gx-5">
+          <!-- Primary content on the left -->
+          <div class="col-md-8">
+            <!-- Center title within column -->
+            <h2 class="text-center mb-4">Blogs</h2>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+              {% for blog in page_obj %}
+              <div class="col">
+                <a
+                  href="{% url 'blog_detail' blog.id %}?page={{ page_obj.number }}"
+                  class="card-link"
+                >
+                  <div class="card shadow-sm">
+                    {% if blog.image %}
+                    <img
+                      class="card-img-top"
+                      src="{{ blog.image.url }}"
+                      alt="{{ blog.title }}"
+                    />
                     {% endif %}
-                    {% endfor %}
-
-                    <!-- Next Page -->
-                    {% if page_obj.has_next %}
-                    <li class="page-item">
-                      <a
-                        class="page-link"
-                        href="?page={{ page_obj.next_page_number }}"
-                        aria-label="Next"
-                      >
-                        <span aria-hidden="true">&raquo;</span>
-                      </a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disabled">
-                      <span class="page-link">&raquo;</span>
-                    </li>
-                    {% endif %}
-                  </ul>
-                </nav>
+                    <div class="card-body">
+                      <h5 class="card-title">{{ blog.title }}</h5>
+                      <p class="card-text" style="color: grey; font-size: 0.875rem;">
+                        {{ blog.published_date|date:"F j, Y" }}
+                      </p>
+                      <p class="card-text">
+                        {{ blog.summary|truncatewords:20 }}
+                      </p>
+                    </div>
+                  </div>
+                </a>
               </div>
+              {% endfor %}
             </div>
 
-            <!-- 右侧标签云 -->
-            <div class="col-md-3">
-              <div class="tag-cloud-section py-4">
-                <h2 class="text-center mb-4">Tag Cloud</h2>
-                <div class="tagcloud text-center">
-                  {% for tag, count, size in sidebar_tags %}
-                  <a
-                    href="{{ tag.get_absolute_url }}"
-                    style="font-size: {{ size }}pt; margin: 5px; display: inline-block;"
-                    title="{{ count }} articles"
-                  >
-                    {{ tag.name }}
-                  </a>
+            <!-- Pagination controls -->
+            <div class="d-flex justify-content-center mt-4">
+              <nav aria-label="Page navigation">
+                <ul class="pagination">
+                  <!-- Previous Page -->
+                  {% if page_obj.has_previous %}
+                  <li class="page-item">
+                    <a
+                      class="page-link"
+                      href="?page={{ page_obj.previous_page_number }}"
+                      aria-label="Previous"
+                    >
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  {% else %}
+                  <li class="page-item disabled">
+                    <span class="page-link">&laquo;</span>
+                  </li>
+                  {% endif %}
+
+                  <!-- Page Numbers -->
+                  {% for num in page_obj.paginator.page_range %}
+                  {% if page_obj.number == num %}
+                  <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                  </li>
+                  {% else %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">
+                      {{ num }}
+                    </a>
+                  </li>
+                  {% endif %}
                   {% endfor %}
-                </div>
-              </div>
+
+                  <!-- Next Page -->
+                  {% if page_obj.has_next %}
+                  <li class="page-item">
+                    <a
+                      class="page-link"
+                      href="?page={{ page_obj.next_page_number }}"
+                      aria-label="Next"
+                    >
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                  {% else %}
+                  <li class="page-item disabled">
+                    <span class="page-link">&raquo;</span>
+                  </li>
+                  {% endif %}
+                </ul>
+              </nav>
             </div>
           </div>
 
-          <br /><br />
-          <p class="d-flex justify-content-center">
-            <a
-              href="{% url 'home' %}"
-              class="btn btn-primary btn-lg my-4"
-            >
-              Back to Home
-            </a>
-          </p>
+          <!-- Tag cloud on the right -->
+          <div class="col-md-4">
+            <!-- Center title within column -->
+            <h2 class="text-center mb-4">Tag Cloud</h2>
+            <div class="tag-cloud-section" style="margin-bottom: 1rem;">
+              <div id="tag-cloud-app" style="width: 100%; height: 400px; border: 1px solid #ccc;">
+                <div
+                  id="wordcloud"
+                  style="width: 100%; height: 100%;"
+                ></div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </main>
 
-    <!-- ============ Footer ============ -->
-    <footer class="text-center py-4">
-      <div class="container">
-        <p>Connect with me on social media for the latest updates on my work.</p>
-        <a
-          href="https://www.linkedin.com/in/tony-wu-198574137/?locale=en_US"
-          class="btn btn-outline-primary mx-1"
-        >
-          LinkedIn
-        </a>
-        <a
-          href="https://github.com/Tony-XLZ"
-          class="btn btn-outline-secondary mx-1"
-        >
-          GitHub
-        </a>
+        <br /><br />
+        <p class="d-flex justify-content-center">
+          <a
+            href="{% url 'home' %}"
+            class="btn btn-primary btn-lg my-4"
+          >
+            Back to Home
+          </a>
+        </p>
       </div>
-    </footer>
+    </div>
+  </main>
 
-    <!-- Bootstrap 必需的 JS -->
-    <script src="{% static 'jquery-3.7.1.min.js' %}"></script>
-    <script src="{% static 'popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-  </body>
+  <!-- Footer section -->
+  <footer class="text-center py-4">
+    <div class="container">
+      <p>Connect with me on social media for the latest updates on my work.</p>
+      <a
+        href="https://www.linkedin.com/in/tony-wu-198574137/?locale=en_US"
+        class="btn btn-outline-primary mx-1"
+      >
+        LinkedIn
+      </a>
+      <a
+        href="https://github.com/Tony-XLZ"
+        class="btn btn-outline-secondary mx-1"
+      >
+        GitHub
+      </a>
+    </div>
+  </footer>
+
+  <!-- Required Bootstrap JS -->
+  <script src="{% static 'jquery-3.7.1.min.js' %}"></script>
+  <script src="{% static 'popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Convert sidebar_tags to a format suitable for ECharts, including URL field for navigation -->
+  <script>
+    var wordcloudData = [
+      {% for tag, count, size in sidebar_tags %}
+        {
+          name: "{{ tag.name }}",
+          value: {{ count }},
+          url: "{{ tag.get_absolute_url }}"
+        },
+      {% endfor %}
+    ];
+  </script>
+
+  <!-- Vue 3, ECharts, and wordCloud plugin integration -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts-wordcloud/dist/echarts-wordcloud.js"></script>
+
+  <!-- Simple Vue + ECharts application for clickable navigation -->
+  <script>
+    const { createApp, onMounted, ref } = Vue;
+
+    createApp({
+      setup() {
+        const chartInstance = ref(null);
+
+        onMounted(() => {
+          chartInstance.value = echarts.init(document.getElementById('wordcloud'));
+          updateChart();
+          // Responsive adaptation
+          window.addEventListener('resize', () => {
+            chartInstance.value && chartInstance.value.resize();
+          });
+          // Click event for navigation
+          chartInstance.value.on('click', function(params) {
+            if (params.data && params.data.url) {
+              window.location.href = params.data.url;
+            }
+          });
+        });
+
+        function updateChart() {
+          if (!chartInstance.value) return;
+          const option = {
+            tooltip: {},
+            series: [
+              {
+                type: 'wordCloud',
+                shape: 'circle',
+                drawOutOfBound: true,
+                maxLayoutAttempts: 2000,
+                gridSize: 15,
+                sizeRange: [20, 50],
+                textStyle: {
+                  fontFamily: 'sans-serif',
+                  fontWeight: 'bold',
+                  color: function () {
+                    return 'rgb(' + [
+                      Math.round(Math.random() * 160),
+                      Math.round(Math.random() * 160),
+                      Math.round(Math.random() * 160)
+                    ].join(',') + ')';
+                  }
+                },
+                emphasis: {
+                  focus: 'self',
+                  textStyle: {
+                    textShadowBlur: 10,
+                    textShadowColor: '#333'
+                  }
+                },
+                data: wordcloudData
+              }
+            ]
+          };
+          chartInstance.value.setOption(option);
+        }
+
+        return {};
+      }
+    }).mount('#tag-cloud-app');
+  </script>
+</body>
 </html>
