@@ -439,25 +439,46 @@
 
   <!-- Simple Vue + ECharts application for clickable navigation -->
   <script>
-    const { createApp, onMounted, ref } = Vue;
+    const { createApp, onMounted, onUnmounted, ref } = Vue;
+
+    function debounce(func, delay) {
+      let timerId;
+      return function () {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timerId);
+        timerId = setTimeout(() => {
+          func.apply(context, args);
+        }, delay);
+      };
+    }
 
     createApp({
       setup() {
         const chartInstance = ref(null);
+        let handleResize = null;
 
         onMounted(() => {
           chartInstance.value = echarts.init(document.getElementById('wordcloud'));
           updateChart();
-          // Responsive adaptation
-          window.addEventListener('resize', () => {
-            chartInstance.value && chartInstance.value.resize();
-          });
-          // Click event for navigation
+
+          handleResize = debounce(() => {
+            if (chartInstance.value) {
+              chartInstance.value.resize();
+            }
+          }, 400);
+
+          window.addEventListener('resize', handleResize);
+
           chartInstance.value.on('click', function(params) {
             if (params.data && params.data.url) {
               window.location.href = params.data.url;
             }
           });
+        });
+
+        onUnmounted(() => {
+          window.removeEventListener('resize', handleResize);
         });
 
         function updateChart() {
