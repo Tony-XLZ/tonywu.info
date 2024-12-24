@@ -1,31 +1,33 @@
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
 {% load static %}
-
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Tony Wu's Blog List Page" />
+    <meta name="description" content="Blogs tagged with {{ tag.name }}" />
     <meta name="author" content="Tony Wu" />
     <meta name="generator" content="Hugo 0.122.0" />
-    <title>Blogs</title>
+    <title>Blogs Tagged: {{ tag.name }}</title>
 
-    <!-- Bootstrap 样式 -->
+    <!-- Canonical Link -->
+    <link rel="canonical" href="https://tonywu.info/blogs/tag/{{ tag.slug }}" />
+
+    <!-- Bootstrap Styles -->
     <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet" />
 
-    <!-- Bootstrap Icons，用于箭头图标 -->
+    <!-- Bootstrap Icons -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
     />
 
-    <!-- 其他 CSS 或外部库 -->
+    <!-- Additional CSS Libraries -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@docsearch/css@3"
     />
 
-    <!-- Favicons 等 -->
+    <!-- Favicons -->
     <link
       rel="apple-touch-icon"
       sizes="180x180"
@@ -50,14 +52,14 @@
     <link
       rel="mask-icon"
       href="{% static 'safari-pinned-tab.svg' %}"
-      color="F8F9FAFF"
+      color="#F8F9FA"
     />
     <link
       rel="icon"
       href="{% static 'favicon.ico' %}"
       type="image/x-icon"
     />
-    <meta name="theme-color" content="F8F9FAFF" />
+    <meta name="theme-color" content="#F8F9FA" />
 
     <style>
       /* ============ 基础布局 ============ */
@@ -189,7 +191,7 @@
   </head>
 
   <body>
-    <!-- ============ Header / Navbar ============ -->
+    <!-- Header / Navbar -->
     <header>
       <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
         <div class="container-fluid">
@@ -290,153 +292,92 @@
       </nav>
     </header>
 
-    <!-- ============ Main Content ============ -->
     <main>
       <div class="album py-5 bg-light">
         <div class="container">
-          <div class="row">
-            <!-- 左侧主内容 -->
-            <div class="col-md-9">
-              <h2 class="text-center mb-4">Blogs</h2>
-              <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                {% for blog in page_obj %}
-                <div class="col">
-                  <a
-                    href="{% url 'blog_detail' blog.id %}?page={{ page_obj.number }}"
-                    class="card-link"
-                  >
-                    <div class="card shadow-sm">
-                      {% if blog.image %}
-                      <img
-                        class="card-img-top"
-                        src="{{ blog.image.url }}"
-                        alt="{{ blog.title }}"
-                      />
-                      {% endif %}
-                      <div class="card-body">
-                        <h5 class="card-title">{{ blog.title }}</h5>
-                        <p class="card-text" style="color: grey; font-size: 0.875rem;">
-                          {{ blog.published_date|date:"F j, Y" }}
-                        </p>
-                        <p class="card-text">
-                          {{ blog.summary|truncatewords:20 }}
-                        </p>
-                      </div>
+          <h2 class="text-center mb-4">Category: {{ category.name }}</h2>
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% if page_obj %}
+              {% for blog in page_obj %}
+              <div class="col">
+                <a href="{{ blog.get_absolute_url }}" class="card-link">
+                  <div class="card shadow-sm">
+                    {% if blog.image %}
+                    <img class="card-img-top" src="{{ blog.image.url }}" alt="{{ blog.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                      <h5 class="card-title">{{ blog.title }}</h5>
+                      <p class="card-text" style="color: grey; font-size: 0.875rem;">{{ blog.published_date|date:"F j, Y" }}</p>
                     </div>
-                  </a>
-                </div>
-                {% endfor %}
+                  </div>
+                </a>
               </div>
-
-              <!-- 分页 -->
-              <div class="d-flex justify-content-center mt-4">
-                <nav aria-label="Page navigation">
-                  <ul class="pagination">
-                    <!-- Previous Page -->
-                    {% if page_obj.has_previous %}
-                    <li class="page-item">
-                      <a
-                        class="page-link"
-                        href="?page={{ page_obj.previous_page_number }}"
-                        aria-label="Previous"
-                      >
-                        <span aria-hidden="true">&laquo;</span>
-                      </a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disabled">
-                      <span class="page-link">&laquo;</span>
-                    </li>
-                    {% endif %}
-
-                    <!-- Page Numbers -->
-                    {% for num in page_obj.paginator.page_range %}
-                    {% if page_obj.number == num %}
-                    <li class="page-item active">
-                      <span class="page-link">{{ num }}</span>
-                    </li>
-                    {% else %}
-                    <li class="page-item">
-                      <a class="page-link" href="?page={{ num }}">
-                        {{ num }}
-                      </a>
-                    </li>
-                    {% endif %}
-                    {% endfor %}
-
-                    <!-- Next Page -->
-                    {% if page_obj.has_next %}
-                    <li class="page-item">
-                      <a
-                        class="page-link"
-                        href="?page={{ page_obj.next_page_number }}"
-                        aria-label="Next"
-                      >
-                        <span aria-hidden="true">&raquo;</span>
-                      </a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disabled">
-                      <span class="page-link">&raquo;</span>
-                    </li>
-                    {% endif %}
-                  </ul>
-                </nav>
-              </div>
-            </div>
-
-            <!-- 右侧标签云 -->
-            <div class="col-md-3">
-              <div class="tag-cloud-section py-4">
-                <h2 class="text-center mb-4">Tag Cloud</h2>
-                <div class="tagcloud text-center">
-                  {% for tag, count, size in sidebar_tags %}
-                  <a
-                    href="{{ tag.get_absolute_url }}"
-                    style="font-size: {{ size }}pt; margin: 5px; display: inline-block;"
-                    title="{{ count }} articles"
-                  >
-                    {{ tag.name }}
-                  </a>
-                  {% endfor %}
-                </div>
-              </div>
-            </div>
+              {% endfor %}
+            {% else %}
+              <p class="text-center">No blogs found in this category.</p>
+            {% endif %}
           </div>
 
-          <br /><br />
-          <p class="d-flex justify-content-center">
-            <a
-              href="{% url 'home' %}"
-              class="btn btn-primary btn-lg my-4"
-            >
-              Back to Home
-            </a>
+          <!-- Pagination Controls -->
+          <div class="d-flex justify-content-center mt-4">
+            <nav aria-label="Page navigation">
+              <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                  <span class="page-link">&laquo;</span>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                  {% if page_obj.number == num %}
+                  <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                  </li>
+                  {% else %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                  </li>
+                  {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                  <span class="page-link">&raquo;</span>
+                </li>
+                {% endif %}
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center my-4">
+          <br/><br/>
+          <p>
+            <a href="{% url 'blogs_list' %}?page={{ request.GET.page|default:1 }}" class="btn btn-primary btn-lg my-4">Back to Blogs</a>
           </p>
         </div>
       </div>
     </main>
 
-    <!-- ============ Footer ============ -->
     <footer class="text-center py-4">
       <div class="container">
         <p>Connect with me on social media for the latest updates on my work.</p>
-        <a
-          href="https://www.linkedin.com/in/tony-wu-198574137/?locale=en_US"
-          class="btn btn-outline-primary mx-1"
-        >
-          LinkedIn
-        </a>
-        <a
-          href="https://github.com/Tony-XLZ"
-          class="btn btn-outline-secondary mx-1"
-        >
-          GitHub
-        </a>
+        <a href="https://www.linkedin.com/in/tony-wu-198574137/?locale=en_US" class="btn btn-outline-primary mx-1">LinkedIn</a>
+        <a href="https://github.com/Tony-XLZ" class="btn btn-outline-secondary mx-1">GitHub</a>
       </div>
     </footer>
 
-    <!-- Bootstrap 必需的 JS -->
     <script src="{% static 'jquery-3.7.1.min.js' %}"></script>
     <script src="{% static 'popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>

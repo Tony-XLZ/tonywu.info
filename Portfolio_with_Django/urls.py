@@ -41,6 +41,8 @@ urlpatterns = [
     path('jobs/<int:job_id>/', jobs.views.job_detail, name="job_detail"),
     path('blogs/', blogs.views.blogs_list, name='blogs_list'),
     path('blogs/<int:blog_id>/', blogs.views.blog_detail, name="blog_detail"),
+    path('blogs/category/<slug:slug>/', blogs.views.category_detail, name='category_detail'),
+    path('blogs/tag/<slug:slug>/', blogs.views.tag_detail, name='tag_detail'),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('sitemap.xml', custom_sitemap, {'sitemaps': sitemaps}, name='sitemap'),
 ]

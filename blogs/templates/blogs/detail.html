@@ -195,7 +195,7 @@
             </div>
             <br/><br/>
             <p>
-              <a href="{% url 'blogs_list' %}" class="btn btn-primary btn-lg my-4">Back to Blogs</a>
+              <a href="{% url 'blogs_list' %}?page={{ request.GET.page|default:1 }}" class="btn btn-primary btn-lg my-4">Back to Blogs</a>
             </p>
           </div>
         </div>

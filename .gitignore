@@ -8,4 +8,7 @@ media/images/
 media/blog_images/
 media/uploads/
 
+blogs/migrations
+jobs/migrations
+
 .env
