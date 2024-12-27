@@ -3,7 +3,9 @@
 {% load static %}
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Disable page zoom and allow Viewer.js to handle image zoom -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
     <meta name="description" content="Blog Detail Page">
     <meta name="author" content="Tony Wu">
     <meta name="generator" content="Hugo 0.122.0">
@@ -22,6 +24,9 @@
     <link rel="mask-icon" href="{% static 'safari-pinned-tab.svg' %}" color="F8F9FAFF">
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
     <meta name="theme-color" content="F8F9FAFF">
+
+    <!-- Viewer.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/viewerjs/dist/viewer.min.css">
 
     <style>
       html, body {
@@ -111,7 +116,7 @@
         height: auto;
         display: block;
         margin: 20px auto;
-        cursor: zoom-in; /* Cursor displays a magnifying glass */
+        cursor: zoom-in; /* Show magnifying glass cursor */
       }
 
       footer {
@@ -180,7 +185,11 @@
 
     <!-- Main content area -->
     <main>
-      <section class="blog-detail-section text-center container">
+      <!--
+        Put the header image and body content in the same parent container
+        so Viewer.js can manage all the images together.
+      -->
+      <section id="blog-container" class="blog-detail-section text-center container">
         <div class="row py-lg-5">
           <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="fw-bold">{{ blog.title }}</h1>
@@ -189,13 +198,11 @@
             <br/><br/>
             {% if blog.image %}
             <div class="blog-image-container d-flex justify-content-center">
-              <!-- Add the data-zoomable attribute -->
-              <img src="{{ blog.image.url }}" class="blog-image" alt="{{ blog.title }}" data-zoomable>
+              <img src="{{ blog.image.url }}" class="blog-image" alt="{{ blog.title }}">
             </div>
             {% endif %}
 
             <!-- Blog content (CKEditor output) -->
-            <!-- Add data-zoomable to all images within the article -->
             <div class="blog-content">
               {{ blog.content|safe }}
             </div>
@@ -230,14 +237,23 @@
       hljs.highlightAll();
     </script>
 
-    <!-- Import the medium-zoom library -->
-    <script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script>
+    <!-- Viewer.js JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/viewerjs/dist/viewer.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll('.blog-content img').forEach(img => {
-          img.setAttribute('data-zoomable', '');
+        // Initialize Viewer.js and pass in the parent container containing all images
+        const container = document.getElementById('blog-container');
+        const viewer = new Viewer(container, {
+          // Configuration options can be adjusted as needed
+          // For example, disable rotate/download toolbar buttons:
+          toolbar: {
+            zoomIn: true,
+            zoomOut: true,
+            oneToOne: true,
+            reset: true,
+          },
+          title: false,
         });
-        mediumZoom('[data-zoomable]');
       });
     </script>
 
