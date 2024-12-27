@@ -2,8 +2,6 @@
 <html lang="en" data-bs-theme="auto">
 {% load static %}
   <head>
-    <script src="/docs/5.3/assets/js/color-modes.js"></script>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Blog Detail Page">
@@ -42,8 +40,8 @@
 
       @media (max-width: 576px) {
         .blog-detail-section h1 {
-          font-size: 1.8rem !important; /* Reduce font size for small screens */
-          line-height: 1.2 !important; /* Adjust line height for better readability */
+          font-size: 1.8rem !important;
+          line-height: 1.2 !important;
         }
       }
 
@@ -111,8 +109,9 @@
       .blog-content img {
         max-width: 100%;
         height: auto;
-          display: block;
-          margin: 20px auto;
+        display: block;
+        margin: 20px auto;
+        cursor: zoom-in; /* Indicates the image can be clicked to zoom */
       }
 
       footer {
@@ -146,22 +145,46 @@
         padding: 10px 20px;
         margin: 10px 5px;
       }
+
+      /* Added: Styles for the image zoom modal */
+      .image-modal {
+        position: fixed;
+        display: none; /* Hidden by default */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 9999; /* Ensures the modal is on top */
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-image {
+        max-width: 90%;
+        max-height: 90%;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(255,255,255,0.8);
+        cursor: default; /* Normal cursor for the enlarged image */
+      }
+
     </style>
 
   </head>
   <body>
+    <!-- Top navigation bar -->
     <header>
       <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
         <div class="container-fluid">
           <a class="navbar-brand" href="{% url 'home' %}">Tony Wu</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                  aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'home' %}">Home</a>
-              </li>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="/jobs/">Projects</a>
@@ -178,30 +201,39 @@
       </nav>
     </header>
 
+    <!-- Main content area -->
     <main>
       <section class="blog-detail-section text-center container">
         <div class="row py-lg-5">
           <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="fw-bold">{{ blog.title }}</h1>
             <p class="text-muted" style="color: grey;">Posted on {{ blog.published_date|date:"F j, Y" }}</p>
+
             <br/><br/>
             {% if blog.image %}
             <div class="blog-image-container d-flex justify-content-center">
               <img src="{{ blog.image.url }}" class="blog-image" alt="{{ blog.title }}">
             </div>
             {% endif %}
+
+            <!-- Blog content (CKEditor output) -->
             <div class="blog-content">
               {{ blog.content|safe }}
             </div>
+
             <br/><br/>
             <p>
-              <a href="{% url 'blogs_list' %}?page={{ request.GET.page|default:1 }}" class="btn btn-primary btn-lg my-4">Back to Blogs</a>
+              <a href="{% url 'blogs_list' %}?page={{ request.GET.page|default:1 }}"
+                 class="btn btn-primary btn-lg my-4">
+                Back to Blogs
+              </a>
             </p>
           </div>
         </div>
       </section>
     </main>
 
+    <!-- Footer -->
     <footer class="text-center py-4">
       <div class="container">
         <p>Connect with me on social media for the latest updates on my work.</p>
@@ -210,10 +242,48 @@
       </div>
     </footer>
 
+    <!-- Modal for zoomed-in images -->
+    <div id="image-modal" class="image-modal" onclick="closeModal()">
+      <!-- To prevent closing the modal when clicking on the image, add onclick="event.stopPropagation()" to the img tag -->
+      <img id="modal-image" class="modal-image" alt="Enlarged Image" onclick="event.stopPropagation()">
+    </div>
+
+    <!-- JavaScript -->
     <script src="{% static 'jquery-3.7.1.min.js' %}"></script>
     <script src="{% static 'popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
-    <script>hljs.highlightAll();</script>
+    <script>
+      hljs.highlightAll();
+    </script>
+
+    <!-- Added: Script for zooming in on blog content images -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        // Get all images in the blog content
+        const images = document.querySelectorAll('.blog-content img');
+
+        images.forEach(img => {
+          img.addEventListener('click', function() {
+            openModal(img.src);
+          });
+        });
+      });
+
+      // Open the modal and display the clicked image
+      function openModal(src) {
+        const modal = document.getElementById('image-modal');
+        const modalImage = document.getElementById('modal-image');
+        modalImage.src = src;
+        modal.style.display = 'flex';  // Display the modal
+      }
+
+      // Close the modal
+      function closeModal() {
+        const modal = document.getElementById('image-modal');
+        modal.style.display = 'none';
+      }
+    </script>
+
   </body>
 </html>
