@@ -168,6 +168,23 @@
           height: 250px;
         }
       }
+
+      .chart-description {
+        text-align: center;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin: 1rem auto;
+        max-width: 700px;
+      }
+
+      @media (max-width: 768px) {
+        .chart-description {
+          font-size: 0.8rem;
+          line-height: 1.4;
+          margin: 0.5rem auto;
+          padding: 0 1rem;
+        }
+      }
     </style>
 
   </head>
@@ -281,8 +298,9 @@
         <div class="album py-5" id="visualization" data-aos="fade-up" data-aos-duration="1500">
           <div class="container">
             <h2 class="text-center mb-4">Time</h2>
-            <p class="text-center" style="max-width:700px; margin: 0 auto;">
-              This is how I spend my time. My biggest hobby is learning,<br/>
+            <p class="chart-description">
+              This is how I spend my time.
+              My biggest hobby is learning,
               as I am curious about almost everything.
             </p>
             <div class="row justify-content-center mt-4">
