@@ -14,6 +14,9 @@
     <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 
+    <!-- AOS animation library CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"/>
+
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
@@ -26,30 +29,27 @@
     <style>
       html, body {
         height: 100%;
+        margin: 0;
+        padding: 0;
       }
-
       body {
         display: flex;
         flex-direction: column;
         min-height: 100vh;
       }
-
       main {
         flex: 1;
       }
-
       @media (min-width: 768px) {
         .bd-placeholder-img-lg {
           font-size: 3.5rem;
         }
       }
-
       @media (max-width: 992px) {
         .navbar-nav {
           text-align: right;
         }
       }
-
       .nav-scroller .nav {
         display: flex;
         flex-wrap: nowrap;
@@ -60,52 +60,50 @@
         white-space: nowrap;
         -webkit-overflow-scrolling: touch;
       }
-
       .bd-mode-toggle {
         z-index: 1500;
       }
-
       .bd-mode-toggle .dropdown-menu .active .bi {
         display: block !important;
       }
 
+      /* About Me: Maintain white/light background */
+      .wrapper-about {
+        background-color: #fff;
+      }
       .hero-section {
-        background-image: url('{% static "hero.jpg" %}');
+        background-image: url('{% static "hero.jpg" %}'); /* Replace with your own background image */
         background-size: cover;
         background-position: center;
         color: #fff;
         padding: 60px 0;
         text-align: center;
       }
-
       .profile-image {
         border-radius: 50%;
         border: 5px solid #fff;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
 
+      /* Lower section: Maintain original light gray background */
+      .wrapper-rest {
+        position: relative;
+        background-color: #f8f9fa;
+      }
+
       .card-img-top {
         height: 200px;
         object-fit: cover;
       }
-
       .card-link {
         text-decoration: none;
         color: inherit;
       }
-
-      .card-link .card-text,
-      .card-link .card-title {
-        text-decoration: none;
-        color: inherit;
-      }
-
       .card-link:hover .card {
         transform: scale(1.05);
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
       }
-
       .more-button {
         background-color: rgb(63, 113, 250);
         border: none;
@@ -116,7 +114,6 @@
         font-weight: normal;
         transition: background-color 0.3s ease;
       }
-
       .more-button:hover {
         background-color: rgb(143, 172, 255);
         color: #ffffff;
@@ -129,29 +126,47 @@
         padding: 20px 0;
         width: 100%;
       }
-
       footer a {
         color: #ffffff;
       }
-
       footer a.btn {
         background-color: #ffffff;
         color: #343a40;
         border: none;
       }
-
       footer a.btn-outline-primary:hover {
         background-color: #3867c0;
       }
-
       footer a.btn-outline-secondary:hover {
         background-color: #28a745;
       }
-
       footer .btn-outline-primary,
       footer .btn-outline-secondary {
         padding: 10px 20px;
         margin: 10px 5px;
+      }
+
+      /* Limit the maximum width of the chart container and maintain proper height */
+      .chart-container {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 10px;
+        padding: 1rem 2rem;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      }
+      .chart-container canvas {
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 768px) {
+        .chart-container {
+          padding: 1rem;
+        }
+        .chart-container canvas {
+          height: 250px;
+        }
       }
     </style>
 
@@ -161,7 +176,8 @@
       <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">Tony Wu</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                  aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNav">
@@ -185,68 +201,101 @@
     </header>
 
     <main>
-      <section class="hero-section" id="about">
-        <div class="container">
-          <div class="row py-5">
-            <div class="col-lg-6 col-md-8 mx-auto">
-              <img src="{% static 'tony.jpg' %}" class="profile-image mb-4" style="max-height: 200px; width: auto;" alt="Tony Wu">
-              <br/><br/>
-              <h2 class="fw-bold" style="color: #000">About Me</h2>
-              <p class="lead" style="color: #000"> I'm Tony Wu, a recent graduate with degrees in Finance from Queen's University Belfast and Technology Policy from University College London. Experienced as a Financial Assistant in London and a Researcher in China, specializing in data visualization and financial analysis. Proficient in Python, R, SQL, and various data analytics tools, with professional certificates in Data Analytics. Enjoy open source programming, photography and hiking at leisure. </p>
+      <!-- Upper section: About Me (white background) -->
+      <div class="wrapper-about">
+        <section class="hero-section" id="about" data-aos="fade-in" data-aos-duration="1500">
+          <div class="container">
+            <div class="row py-5">
+              <div class="col-lg-6 col-md-8 mx-auto text-center">
+                <img src="{% static 'tony.jpg' %}"
+                     class="profile-image mb-4"
+                     style="max-height: 200px; width: auto;"
+                     alt="Tony Wu"
+                     data-aos="zoom-in"
+                     data-aos-duration="1500">
+                <br/><br/>
+                <h2 class="fw-bold" style="color: #000">About Me</h2>
+                <p class="lead" style="color: #000">
+                  I'm Tony Wu, a recent graduate with degrees in Finance from Queen's University Belfast and Technology Policy from University College London. Experienced as a Financial Assistant in London and a Researcher in China, specializing in data visualization and financial analysis. Proficient in Python, R, SQL, and various data analytics tools, with professional certificates in Data Analytics. Enjoy open source programming, photography and hiking at leisure.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      <div class="album py-5 bg-body-tertiary" id="projects">
-        <div class="container">
-          <h2 class="text-center mb-4">Projects</h2>
-          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            {% for job in jobs.all|slice:":3" %}
-            <div class="col">
-              <a href="{% url 'job_detail' job.id %}" class="card-link">
-                <div class="card shadow-sm">
-                  <img class="card-img-top" src="{{ job.image.url }}" alt="{{ job.summary }}">
-                  <div class="card-body">
-                    <p class="card-text">{{ job.summary }}</p>
-                  </div>
-                </div>
-              </a>
-            </div>
-            {% endfor %}
-          </div>
-          <div class="text-center">
-            <a href="/jobs/" class="btn more-button">More Projects</a>
-          </div>
-        </div>
+        </section>
       </div>
 
-            <!-- Blogs Section -->
-      <div class="album py-5 bg-light" id="blogs">
-        <div class="container">
-          <h2 class="text-center mb-4">Blogs</h2>
-          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            {% for blog in blogs|slice:":3" %}
-            <div class="col">
-              <a href="{% url 'blog_detail' blog.id %}" class="card-link">
-                <div class="card shadow-sm">
-                  {% if blog.image %}
-                    <img class="card-img-top" src="{{ blog.image.url }}" alt="{{ blog.title }}">
-                  {% endif %}
-                  <div class="card-body">
-                    <h5 class="card-title">{{ blog.title }}</h5>
-                    <p class="card-text" style="font-size: 0.875rem; color: grey;">{{ blog.published_date|date:"F j, Y" }}</p>
+      <!-- Lower section: Light gray background -->
+      <div class="wrapper-rest">
+        <!-- Projects -->
+        <div class="album py-5" id="projects" data-aos="fade-up" data-aos-duration="1000">
+          <div class="container">
+            <h2 class="text-center mb-4">Projects</h2>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+              {% for job in jobs.all|slice:":3" %}
+              <div class="col" data-aos="flip-left" data-aos-duration="1000">
+                <a href="{% url 'job_detail' job.id %}" class="card-link">
+                  <div class="card shadow-sm">
+                    <img class="card-img-top" src="{{ job.image.url }}" alt="{{ job.summary }}">
+                    <div class="card-body">
+                      <p class="card-text">{{ job.summary }}</p>
+                    </div>
                   </div>
-                </div>
-              </a>
+                </a>
+              </div>
+              {% endfor %}
             </div>
-            {% endfor %}
-          </div>
-          <div class="text-center">
-            <a href="/blogs/" class="btn more-button">More Blogs</a>
+            <div class="text-center">
+              <a href="/jobs/" class="btn more-button">More Projects</a>
+            </div>
           </div>
         </div>
-      </div>
+
+        <!-- Blogs -->
+        <div class="album py-5" id="blogs" data-aos="fade-up" data-aos-duration="1000">
+          <div class="container">
+            <h2 class="text-center mb-4">Blogs</h2>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+              {% for blog in blogs|slice:":3" %}
+              <div class="col" data-aos="flip-right" data-aos-duration="1000">
+                <a href="{% url 'blog_detail' blog.id %}" class="card-link">
+                  <div class="card shadow-sm">
+                    {% if blog.image %}
+                      <img class="card-img-top" src="{{ blog.image.url }}" alt="{{ blog.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                      <h5 class="card-title">{{ blog.title }}</h5>
+                      <p class="card-text" style="font-size: 0.875rem; color: grey;">{{ blog.published_date|date:"F j, Y" }}</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="text-center">
+              <a href="/blogs/" class="btn more-button">More Blogs</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Visualization -->
+        <div class="album py-5" id="visualization" data-aos="fade-up" data-aos-duration="1500">
+          <div class="container">
+            <h2 class="text-center mb-4">Time</h2>
+            <p class="text-center" style="max-width:700px; margin: 0 auto;">
+              This is how I spend my time. My biggest hobby is learning,<br/>
+              as I am curious about almost everything.
+            </p>
+            <div class="row justify-content-center mt-4">
+              <div class="col-md-10 col-lg-8">
+                <!-- Chart container -->
+                <div class="chart-container">
+                  <canvas id="myChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- wrapper-rest -->
     </main>
 
     <footer class="text-center py-4">
@@ -257,8 +306,100 @@
       </div>
     </footer>
 
+    <!-- Required JS -->
     <script src="{% static 'jquery-3.7.1.min.js' %}"></script>
     <script src="{% static 'popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- AOS Animation Library JS -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <script>
+      const ctx = document.getElementById('myChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [0, 5, 10, 15, 20, 25],
+          datasets: [
+            {
+              label: 'Study',
+              data: [0, 65, 40, 25, 25, 25],
+              fill: true,
+              backgroundColor: '#B0AFAE',
+              borderColor: '#B0AFAE',
+              tension: 0.4,
+              pointRadius: 0
+            },
+            {
+              label: 'Game',
+              data: [0, 0, 25, 25, 20, 15],
+              fill: true,
+              backgroundColor: '#C5AFA0',
+              borderColor: '#C5AFA0',
+              tension: 0.4,
+              pointRadius: 0
+            },
+            {
+              label: 'Photography',
+              data: [0, 0, 0, 10, 15, 20],
+              fill: true,
+              backgroundColor: '#7E8D85',
+              borderColor: '#7E8D85',
+              tension: 0.4,
+              pointRadius: 0
+            },
+            {
+              label: 'Coding',
+              data: [0, 0, 0, 10, 20, 25],
+              fill: true,
+              backgroundColor: '#6B5B6E',
+              borderColor: '#6B5B6E',
+              tension: 0.4,
+              pointRadius: 0
+            },
+            {
+              label: 'Social or Family',
+              data: [100, 35, 35, 30, 20, 15],
+              fill: true,
+              backgroundColor: '#D7CFC5',
+              borderColor: '#D7CFC5',
+              tension: 0.4,
+              pointRadius: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              title: { display: true, text: 'Age' }
+            },
+            y: {
+              beginAtZero: true,
+              stacked: true,
+              title: { display: true, text: 'Percentage (%)' },
+              ticks: {
+                callback: (val) => val + '%'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                boxWidth: 12,
+                font: { size: 10 }
+              }
+            }
+          }
+        }
+      });
+    </script>
   </body>
 </html>
