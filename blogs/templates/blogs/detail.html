@@ -10,8 +10,6 @@
     <meta name="author" content="Tony Wu">
     <meta name="generator" content="Hugo 0.122.0">
 
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
     <title>Blog Detail - Tony Wu</title>
 
     <link rel="canonical" href="{{ request.build_absolute_uri }}">
@@ -120,6 +118,20 @@
         display: block;
         margin: 20px auto;
         cursor: zoom-in; /* Show magnifying glass cursor */
+      }
+
+      /* MathJax */
+      .blog-content .MathJax_Display,
+      .blog-content .MathJax_SVG {
+        max-width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        display: inline-block;
+      }
+
+      .blog-content .MathJax_SVG svg {
+        max-width: 100%;
+        height: auto;
       }
 
       footer {
@@ -258,6 +270,25 @@
           title: false,
         });
       });
+    </script>
+
+    <script>
+        MathJax = {
+            svg: {
+                scale: 1,
+                minScaleAdjust: 0.5
+            },
+            options: {
+                processHtmlClass: "blog-content"
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            MathJax.typesetPromise();
+        });
     </script>
 
   </body>
