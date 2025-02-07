@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <!-- Disable user zooming to prevent pinch or double-tap zoom on mobile devices -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="description" content="Queens Puzzle Page">
   <meta name="author" content="Tony Wu">
   <title>Queens Puzzle - Tony Wu</title>
@@ -49,7 +49,6 @@
         text-align: right;
       }
     }
-
     .nav-scroller .nav {
       display: flex;
       flex-wrap: nowrap;
@@ -277,8 +276,9 @@
           <!-- Action Buttons -->
           <div class="mt-3">
             <button id="resetBtn" class="btn btn-danger me-2">Reset</button>
+            <!-- Undo button to undo the entire drag operation -->
             <button id="undoBtn" class="btn btn-warning me-2">Undo</button>
-            <button id="hintBtn" class="btn btn-success me-2">Hint</button>
+            <button id="hintBtn" class="btn btn-success me-2">Next Hint</button>
             <button id="nextLevelBtn" class="btn btn-primary">Next Level</button>
           </div>
 
@@ -314,6 +314,7 @@
   <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
   <script>
+    // Initialize Highlight.js
     hljs.highlightAll();
   </script>
   <script src="https://cdn.jsdelivr.net/npm/viewerjs/dist/viewer.min.js"></script>
@@ -348,23 +349,23 @@
 
   <!-- Update Random Button's URL when Size selection changes -->
   <script>
+    // Update the Random button's URL dynamically based on the selected size.
     document.addEventListener("DOMContentLoaded", function() {
       const sizeSelect = document.querySelector('select[name="size"]');
       const randomBtn = document.getElementById("randomBtn");
       if (sizeSelect && randomBtn) {
         sizeSelect.addEventListener("change", function() {
           const newSize = this.value;
-          // Update random button URL so it always uses the currently selected size and level=-1 (for random)
           randomBtn.href = "?size=" + newSize + "&level=-1";
         });
       }
     });
   </script>
 
-  <!-- Queens Puzzle Logic and Undo Functionality -->
+  <!-- Queens Puzzle Logic and Undo for Entire Drag Operation -->
   <script>
     /***************** Puzzle Setup *****************/
-    // Board size, passed from the backend as a number; default level is set to 1 if not provided.
+    // Board size, passed from backend as a number; default level is set to 1 if not provided.
     const N = parseInt("{{ size }}", 10);
     let currentLevel = parseInt("{{ level|default:'1' }}", 10);
 
@@ -439,14 +440,16 @@
     // Create a 2D array to store the DOM elements for each cell.
     let cellEls = Array.from({ length: N }, () => Array(N));
 
-    // Global move history to support the undo feature.
+    // Global move history for undo functionality.
     let moveHistory = [];
+    // Array to group moves during a drag operation.
+    let currentDragMoves = [];
 
     // Object to record pointer/drag state.
     let pointerState = { isDown: false, dragged: false, lastCell: null, startCell: null, action: null };
 
     /***************** Utility Functions *****************/
-    // Get cell row and column based on pointer event coordinates.
+    // Get the row and column indexes based on pointer event coordinates.
     function getCellRC(e) {
       const rect = boardEl.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -498,6 +501,7 @@
     function onPointerDown(e) {
       pointerState.isDown = true;
       pointerState.dragged = false;
+      currentDragMoves = []; // Clear the current drag moves on new pointer down.
       let { r, c } = getCellRC(e);
       if (r == null) return;
       pointerState.startCell = { r, c };
@@ -514,9 +518,10 @@
       e.preventDefault();
       let { r, c } = getCellRC(e);
       if (r == null) return;
+      // Set the dragged flag before applying the first action so the starting cell update is recorded in the group.
       if (!pointerState.dragged) {
-        applyDragAction(pointerState.startCell.r, pointerState.startCell.c);
         pointerState.dragged = true;
+        applyDragAction(pointerState.startCell.r, pointerState.startCell.c);
       }
       let last = pointerState.lastCell;
       if (last.r !== r || last.c !== c) {
@@ -529,7 +534,14 @@
     function onPointerUp(e) {
       if (!pointerState.isDown) return;
       if (!pointerState.dragged && pointerState.startCell) {
+        // For a tap (no drag), process normally.
         cycleCell(pointerState.startCell.r, pointerState.startCell.c);
+      } else if (pointerState.dragged) {
+        // For a drag operation, group the moves as one undo transaction.
+        if (currentDragMoves.length > 0) {
+          moveHistory.push({ group: currentDragMoves.slice() });
+          currentDragMoves = [];
+        }
       }
       pointerState.isDown = false;
       pointerState.dragged = false;
@@ -538,7 +550,7 @@
       pointerState.action = null;
     }
 
-    // Apply the appropriate action during dragging.
+    // Apply the appropriate action (mark or remove) during dragging.
     function applyDragAction(r, c) {
       if (boardState[r][c] === 'C') return;
       if (pointerState.action === "mark") {
@@ -552,7 +564,7 @@
       }
     }
 
-    // Cycle cell state on a single tap: empty -> X -> crown -> empty.
+    // Cycle cell state on a tap: empty -> X -> crown -> empty.
     function cycleCell(r, c) {
       let cur = boardState[r][c];
       let nxt;
@@ -564,12 +576,17 @@
       updateCell(r, c, nxt);
     }
 
-    // Modified updateCell function with an optional recordHistory parameter.
+    // Modified updateCell: record the previous state for undo if recordHistory is true.
     function updateCell(r, c, val, check = true, recordHistory = true) {
       let prev = boardState[r][c];
-      // Record the previous state if needed and if the value is changing.
+      // Record the previous state only if the value is changing.
       if (recordHistory && prev !== val) {
-        moveHistory.push({ r: r, c: c, oldValue: prev });
+        // If a drag operation is in progress, record the move in currentDragMoves.
+        if (pointerState.isDown && pointerState.dragged) {
+          currentDragMoves.push({ r: r, c: c, oldValue: prev });
+        } else {
+          moveHistory.push({ r: r, c: c, oldValue: prev });
+        }
       }
       let cell = cellEls[r][c];
       if (prev === 'C' && val !== 'C') {
@@ -628,7 +645,7 @@
       }, 800);
     }
 
-    // Highlight the entire row, column, and region.
+    // Highlight the row, column, and region for a given cell.
     function highlightRowColRegion(r, c, on) {
       for (let cc = 0; cc < N; cc++) {
         toggleErr(r, cc, on);
@@ -683,13 +700,13 @@
       messageEl.textContent = "Congratulations! Puzzle solved!";
     }
 
-    // Reset button event: clear board and history.
+    // Reset button: clear the board, state, and move history.
     resetBtn.addEventListener('click', () => {
       boardState = Array.from({ length: N }, () => Array(N).fill(''));
       crowns = [];
       messageEl.textContent = '';
       hintIndex = 0;
-      moveHistory = []; // clear move history on reset
+      moveHistory = []; // Clear move history on reset.
       for (let r = 0; r < N; r++) {
         for (let c = 0; c < N; c++) {
           let cell = cellEls[r][c];
@@ -699,18 +716,24 @@
       }
     });
 
-    // Undo button event: revert the last move.
+    // Undo button: undo the entire drag operation if one occurred; otherwise, undo the last move.
     document.getElementById('undoBtn').addEventListener('click', () => {
       if (moveHistory.length > 0) {
         const lastMove = moveHistory.pop();
-        // Revert the cell to its previous state without recording this change
-        updateCell(lastMove.r, lastMove.c, lastMove.oldValue, true, false);
+        if (lastMove.group) {
+          // If the last move is a group (from a drag), undo each move in reverse order.
+          lastMove.group.reverse().forEach(move => {
+            updateCell(move.r, move.c, move.oldValue, true, false);
+          });
+        } else {
+          updateCell(lastMove.r, lastMove.c, lastMove.oldValue, true, false);
+        }
       } else {
         alert("Nothing to undo!");
       }
     });
 
-    // Hint button event.
+    // Hint button: place a crown at the hint position.
     hintBtn.addEventListener('click', () => {
       if (!solutionPositions || solutionPositions.length === 0) {
         alert('No hints available.');
@@ -770,6 +793,18 @@
         });
       }
     });
+  </script>
+
+  <!-- Prevent double-tap zoom on mobile devices -->
+  <script>
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+      const now = new Date().getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
   </script>
 </body>
 </html>
