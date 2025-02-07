@@ -63,9 +63,9 @@ def puzzle_view(request):
 
     # 4) Parse the level number from GET parameters (levels start from 1)
     try:
-        level = int(request.GET.get('level', '-1'))
+        level = int(request.GET.get('level', '1'))
     except:
-        level = -1
+        level = 1
     # If the level number is invalid (less than 1 or greater than the maximum level), randomly select a level
     if level < 1 or level > max_level:
         level = random.randrange(1, max_level + 1)

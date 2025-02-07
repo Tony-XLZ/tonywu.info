@@ -77,7 +77,7 @@
       position: relative;
       touch-action: none;
     }
-    /* Cell */
+    /* Cell styling */
     .cell {
       position: relative;
       box-sizing: border-box;
@@ -101,7 +101,10 @@
       content: "";
       pointer-events: none;
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background-image: repeating-linear-gradient(
         45deg,
         rgba(255,0,0,0.2) 0px,
@@ -147,12 +150,11 @@
     .controls-container {
       display: flex;
       flex-wrap: nowrap;       /* Keep on a single line */
-      align-items: center;      /* Vertically center */
+      align-items: center;      /* Vertically center elements */
       justify-content: center;  /* Center on desktop */
       white-space: nowrap;      /* Prevent text from wrapping */
       font-size: calc(0.6rem + 0.4vw);  /* Dynamic font size */
     }
-
     /* Force all form controls inside the container to inherit this font size */
     .controls-container label,
     .controls-container select,
@@ -161,29 +163,25 @@
       line-height: 1.2;
       margin: 0;              /* Remove default margin */
       padding: 0.3em 0.5em;     /* Adjust as needed */
-      vertical-align: middle; /* Ensure elements are aligned on the same baseline */
+      vertical-align: middle; /* Align elements on the same baseline */
     }
-
+    /* Add extra right padding to select to prevent the dropdown arrow overlapping the text */
     .controls-container select {
       padding-right: 2.5em !important;
     }
-
     /* Make form controls use flex layout to center content */
     .controls-container form {
       display: flex;
       flex-wrap: nowrap;
       align-items: center;
     }
-
-    /* If needed, further adjust button styling */
+    /* Further adjust button styling if necessary */
     .controls-container .btn {
-      /* If Bootstrap's default styling conflicts with current requirements, override padding */
       padding: 0.3em 0.8em;
       vertical-align: middle;
     }
   </style>
 </head>
-
 <body>
   <!-- Top Navigation -->
   <header>
@@ -243,7 +241,7 @@
     <section class="blog-detail-section text-center container" style="padding-top: 100px;">
       <div class="row py-lg-5 justify-content-center">
         <div class="col-lg-10 col-md-12">
-          <!-- Display Page Title -->
+          <!-- Display the page title -->
           <h1 class="fw-bold mb-4">Queens Puzzle</h1>
 
           <!-- Control Area -->
@@ -260,7 +258,7 @@
               <select id="levelSelect" name="level" class="form-select d-inline-block w-auto me-2"></select>
               <button type="submit" class="btn btn-primary">Go</button>
             </form>
-            <a href="?size={{ size_str }}&level=-1" class="ms-2">
+            <a id="randomBtn" href="?size={{ size_str }}&level=-1" class="ms-2">
               <button type="button" class="btn btn-secondary">Random</button>
             </a>
           </div>
@@ -273,14 +271,15 @@
           <!-- Action Buttons -->
           <div class="mt-3">
             <button id="resetBtn" class="btn btn-danger me-2">Reset</button>
-            <button id="hintBtn" class="btn btn-success me-2">Next Hint</button>
+            <button id="undoBtn" class="btn btn-warning me-2">Undo</button>
+            <button id="hintBtn" class="btn btn-success me-2">Hint</button>
             <button id="nextLevelBtn" class="btn btn-primary">Next Level</button>
           </div>
 
-          <!-- Message Area -->
+          <!-- Message Display Area -->
           <div id="message" class="text-success fw-bold"></div>
 
-          <!-- Add 'How to Play' Instruction Section -->
+          <!-- "How to play" Instruction Section aligned with the board -->
           <div class="board-wrapper" style="max-width: 640px; margin: 1em auto; text-align: left;">
             <h2>How to play</h2>
             <p>
@@ -289,7 +288,6 @@
               Two 👑 cannot touch each other, not even diagonally.
             </p>
           </div>
-
         </div>
       </div>
     </section>
@@ -324,11 +322,11 @@
   <!-- Generate Level Dropdown Menu -->
   <script>
     function populateLevelSelect() {
-      let levelSelect = document.getElementById('levelSelect');
+      const levelSelect = document.getElementById('levelSelect');
       if (!levelSelect) return;
       levelSelect.innerHTML = "";
       for (let i = 1; i <= maxLevel; i++) {
-        let opt = document.createElement("option");
+        const opt = document.createElement("option");
         opt.value = i;
         opt.textContent = i;
         if (i === currentLevel) { opt.selected = true; }
@@ -342,14 +340,29 @@
     }
   </script>
 
-  <!-- Queens Puzzle Logic -->
+  <!-- Update Random Button's URL when Size selection changes -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const sizeSelect = document.querySelector('select[name="size"]');
+      const randomBtn = document.getElementById("randomBtn");
+      if (sizeSelect && randomBtn) {
+        sizeSelect.addEventListener("change", function() {
+          const newSize = this.value;
+          // Update random button URL so it always uses the currently selected size and level=-1 (for random)
+          randomBtn.href = "?size=" + newSize + "&level=-1";
+        });
+      }
+    });
+  </script>
+
+  <!-- Queens Puzzle Logic and Undo Functionality -->
   <script>
     /***************** Puzzle Setup *****************/
-    // Board size, passed from backend as a number
+    // Board size, passed from the backend as a number; default level is set to 1 if not provided.
     const N = parseInt("{{ size }}", 10);
     let currentLevel = parseInt("{{ level|default:'1' }}", 10);
 
-    // Automatically calculate the total number of levels based on the board size
+    // Automatically calculate total levels based on board size.
     let maxLevel;
     if (N === 4 || N === 5) {
       maxLevel = 30;
@@ -361,11 +374,11 @@
       maxLevel = 30;
     }
 
-    // Use backend data: region_map and queen_board
+    // Retrieve backend data: region_map and queen_board.
     let regionMap = {{ region_map|safe }};
     let queenBoard = {{ queen_board|safe }};
 
-    // Automatically generate region colors using a Morandi palette, alternating different saturation and lightness for better contrast
+    // Generate region colors using a Morandi palette with alternating saturation and lightness.
     function generateRegionColors(regionMap) {
       let colors = {};
       let uniqueRegions = new Set();
@@ -390,12 +403,12 @@
     }
     let regionColors = generateRegionColors(regionMap);
 
-    // If no queenBoard data is provided, use an empty board as fallback
+    // If no queenBoard is provided, fallback to an empty board.
     if (!queenBoard) {
       queenBoard = Array.from({ length: N }, () => Array(N).fill(''));
     }
 
-    // Initialize board state and message
+    // Initialize board state, crown positions, and solution positions.
     let boardState = Array.from({ length: N }, () => Array(N).fill(''));
     let crowns = [];
     let solutionPositions = [];
@@ -417,13 +430,17 @@
     const hintBtn = document.getElementById('hintBtn');
     const nextLevelBtn = document.getElementById('nextLevelBtn');
 
-    // Store the DOM elements for each cell
+    // Create a 2D array to store the DOM elements for each cell.
     let cellEls = Array.from({ length: N }, () => Array(N));
 
-    // Record drag state
+    // Global move history to support the undo feature.
+    let moveHistory = [];
+
+    // Object to record pointer/drag state.
     let pointerState = { isDown: false, dragged: false, lastCell: null, startCell: null, action: null };
 
     /***************** Utility Functions *****************/
+    // Get cell row and column based on pointer event coordinates.
     function getCellRC(e) {
       const rect = boardEl.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -434,6 +451,7 @@
       return { r, c };
     }
 
+    // Create the game board by generating cell elements.
     function createBoard() {
       boardEl.innerHTML = '';
       boardEl.style.setProperty('--N', N);
@@ -457,18 +475,20 @@
       boardEl.addEventListener('pointercancel', onPointerUp);
     }
 
+    // On window resize, recreate the board preserving the current state.
     function handleResize() {
       let oldState = JSON.parse(JSON.stringify(boardState));
       createBoard();
       for (let r = 0; r < N; r++) {
         for (let c = 0; c < N; c++) {
           if (oldState[r][c]) {
-            updateCell(r, c, oldState[r][c], false);
+            updateCell(r, c, oldState[r][c], false, false);
           }
         }
       }
     }
 
+    // Pointer down event handler.
     function onPointerDown(e) {
       pointerState.isDown = true;
       pointerState.dragged = false;
@@ -482,6 +502,7 @@
       else { pointerState.action = null; }
     }
 
+    // Pointer move event handler.
     function onPointerMove(e) {
       if (!pointerState.isDown) return;
       e.preventDefault();
@@ -498,6 +519,7 @@
       }
     }
 
+    // Pointer up event handler.
     function onPointerUp(e) {
       if (!pointerState.isDown) return;
       if (!pointerState.dragged && pointerState.startCell) {
@@ -510,6 +532,7 @@
       pointerState.action = null;
     }
 
+    // Apply the appropriate action during dragging.
     function applyDragAction(r, c) {
       if (boardState[r][c] === 'C') return;
       if (pointerState.action === "mark") {
@@ -523,6 +546,7 @@
       }
     }
 
+    // Cycle cell state on a single tap: empty -> X -> crown -> empty.
     function cycleCell(r, c) {
       let cur = boardState[r][c];
       let nxt;
@@ -534,8 +558,13 @@
       updateCell(r, c, nxt);
     }
 
-    function updateCell(r, c, val, check = true) {
+    // Modified updateCell function with an optional recordHistory parameter.
+    function updateCell(r, c, val, check = true, recordHistory = true) {
       let prev = boardState[r][c];
+      // Record the previous state if needed and if the value is changing.
+      if (recordHistory && prev !== val) {
+        moveHistory.push({ r: r, c: c, oldValue: prev });
+      }
       let cell = cellEls[r][c];
       if (prev === 'C' && val !== 'C') {
         let idx = crowns.findIndex(o => o.r === r && o.c === c);
@@ -543,7 +572,7 @@
       }
       if (val === 'C' && check) {
         if (!canPlaceCrown(r, c)) { showErrorEffect(r, c); return; }
-        crowns.push({ r, c });
+        crowns.push({ r: r, c: c });
       }
       boardState[r][c] = val;
       cell.textContent = '';
@@ -558,6 +587,7 @@
       checkIfSolved();
     }
 
+    // Check if the puzzle is solved.
     function canPlaceCrown(r, c) {
       for (let cc = 0; cc < N; cc++) {
         if (boardState[r][cc] === 'C') return false;
@@ -581,6 +611,7 @@
       return true;
     }
 
+    // Display error effect with red diagonal stripes.
     function showErrorEffect(r, c) {
       let cell = cellEls[r][c];
       cell.classList.add('error-stripes');
@@ -591,6 +622,7 @@
       }, 800);
     }
 
+    // Highlight the entire row, column, and region.
     function highlightRowColRegion(r, c, on) {
       for (let cc = 0; cc < N; cc++) {
         toggleErr(r, cc, on);
@@ -613,6 +645,7 @@
       else cell.classList.remove('error-stripes');
     }
 
+    // Check if the puzzle is solved.
     function checkIfSolved() {
       if (crowns.length !== N) return;
       for (let r = 0; r < N; r++) {
@@ -644,11 +677,13 @@
       messageEl.textContent = "Congratulations! Puzzle solved!";
     }
 
+    // Reset button event: clear board and history.
     resetBtn.addEventListener('click', () => {
       boardState = Array.from({ length: N }, () => Array(N).fill(''));
       crowns = [];
       messageEl.textContent = '';
       hintIndex = 0;
+      moveHistory = []; // clear move history on reset
       for (let r = 0; r < N; r++) {
         for (let c = 0; c < N; c++) {
           let cell = cellEls[r][c];
@@ -658,6 +693,18 @@
       }
     });
 
+    // Undo button event: revert the last move.
+    document.getElementById('undoBtn').addEventListener('click', () => {
+      if (moveHistory.length > 0) {
+        const lastMove = moveHistory.pop();
+        // Revert the cell to its previous state without recording this change
+        updateCell(lastMove.r, lastMove.c, lastMove.oldValue, true, false);
+      } else {
+        alert("Nothing to undo!");
+      }
+    });
+
+    // Hint button event.
     hintBtn.addEventListener('click', () => {
       if (!solutionPositions || solutionPositions.length === 0) {
         alert('No hints available.');
@@ -678,14 +725,14 @@
       }
     });
 
-    // "Next Level" functionality: When the current level reaches maxLevel, automatically switch to the next board size (available_sizes)
+    // "Next Level" functionality: if current level reaches maxLevel, switch to the next board size.
     function goNextLevel() {
       let nextLevel, nextSize;
       if (currentLevel < maxLevel) {
         nextLevel = currentLevel + 1;
         nextSize = N;
       } else {
-        // available_sizes is the list of board sizes passed from the backend (possibly as strings), convert them to numbers
+        // Convert available_sizes (possibly strings) to numbers.
         let sizes = {{ available_sizes|safe }}.map(Number);
         let currentSizeIndex = sizes.indexOf(N);
         if (currentSizeIndex >= 0 && currentSizeIndex < sizes.length - 1) {
@@ -702,6 +749,21 @@
     nextLevelBtn.addEventListener('click', goNextLevel);
     window.addEventListener('resize', handleResize);
     createBoard();
+  </script>
+
+  <!-- Update Random Button's URL when Size selection changes -->
+  <script>
+    // Update the Random button's URL dynamically based on the selected size.
+    document.addEventListener("DOMContentLoaded", function() {
+      const sizeSelect = document.querySelector('select[name="size"]');
+      const randomBtn = document.getElementById("randomBtn");
+      if (sizeSelect && randomBtn) {
+        sizeSelect.addEventListener("change", function() {
+          const newSize = this.value;
+          randomBtn.href = "?size=" + newSize + "&level=-1";
+        });
+      }
+    });
   </script>
 </body>
 </html>
