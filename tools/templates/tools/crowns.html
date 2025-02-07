@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+{% load static %}
+<head>
+  <meta charset="utf-8">
+  <!-- Disable user zooming to prevent pinch or double-tap zoom on mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="description" content="Queens Puzzle Page">
+  <meta name="author" content="Tony Wu">
+  <title>Queens Puzzle - Tony Wu</title>
+
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+  <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/monokai.min.css" rel="stylesheet">
+
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
+  <link rel="manifest" href="{% static 'site.webmanifest' %}">
+  <link rel="mask-icon" href="{% static 'safari-pinned-tab.svg' %}" color="F8F9FAFF">
+  <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+  <meta name="theme-color" content="F8F9FAFF">
+
+  <!-- Viewer.js CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/viewerjs/dist/viewer.min.css">
+
+  <!-- Custom Styles -->
+  <style>
+    /* Disable horizontal scrolling and iOS auto-zoom */
+    html, body {
+      overflow-x: hidden;
+      height: 100%;
+      -webkit-text-size-adjust: none;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    main {
+      flex: 1;
+    }
+    .nav-scroller .nav {
+      display: flex;
+      flex-wrap: nowrap;
+      padding-bottom: 1rem;
+      margin-top: -1px;
+      overflow-x: auto;
+      text-align: center;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+    /* Board container: 1:1 aspect ratio, 2px black border */
+    .board-container {
+      width: 100%;
+      max-width: 640px;
+      aspect-ratio: 1 / 1;
+      margin: 1em auto;
+      position: relative;
+      box-sizing: border-box;
+      touch-action: none; /* Disable default scrolling/zooming */
+      border: 2px solid #000;
+    }
+    /* Internal grid: using grid layout */
+    .board {
+      --N: 1;
+      display: grid;
+      grid-template-columns: repeat(var(--N), 1fr);
+      grid-template-rows: repeat(var(--N), 1fr);
+      width: 100%;
+      height: 100%;
+      user-select: none;
+      position: relative;
+      touch-action: none;
+    }
+    /* Cell */
+    .cell {
+      position: relative;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px; /* >=16 to prevent auto-zoom on iOS tap */
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .xmark {
+      color: #000;
+      font-weight: bold;
+    }
+    .crown {
+      color: #ffa500;
+    }
+    /* Error indication: red diagonal stripes overlay */
+    .error-stripes::before {
+      content: "";
+      pointer-events: none;
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: repeating-linear-gradient(
+        45deg,
+        rgba(255,0,0,0.2) 0px,
+        rgba(255,0,0,0.2) 8px,
+        transparent 8px,
+        transparent 16px
+      );
+      opacity: 0.6;
+      z-index: 2;
+    }
+    /* Message display */
+    #message {
+      margin-top: 10px;
+      min-height: 1.2em;
+    }
+    footer {
+      flex-shrink: 0;
+      background: #343a40;
+      color: #fff;
+      padding: 20px 0;
+      width: 100%;
+    }
+    footer a {
+      color: #ffffff;
+    }
+    footer a.btn {
+      background-color: #ffffff;
+      color: #343a40;
+      border: none;
+    }
+    footer a.btn-outline-primary:hover {
+      background-color: #3867c0;
+    }
+    footer a.btn-outline-secondary:hover {
+      background-color: #28a745;
+    }
+    footer .btn-outline-primary,
+    footer .btn-outline-secondary {
+      padding: 10px 20px;
+      margin: 10px 5px;
+    }
+    /* Control area: use flex layout to prevent wrapping on mobile and center on desktop */
+    .controls-container {
+      display: flex;
+      flex-wrap: nowrap;       /* Keep on a single line */
+      align-items: center;      /* Vertically center */
+      justify-content: center;  /* Center on desktop */
+      white-space: nowrap;      /* Prevent text from wrapping */
+      font-size: calc(0.6rem + 0.4vw);  /* Dynamic font size */
+    }
+
+    /* Force all form controls inside the container to inherit this font size */
+    .controls-container label,
+    .controls-container select,
+    .controls-container button {
+      font-size: inherit !important;
+      line-height: 1.2;
+      margin: 0;              /* Remove default margin */
+      padding: 0.3em 0.5em;     /* Adjust as needed */
+      vertical-align: middle; /* Ensure elements are aligned on the same baseline */
+    }
+
+    .controls-container select {
+      padding-right: 2.5em !important;
+    }
+
+    /* Make form controls use flex layout to center content */
+    .controls-container form {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+
+    /* If needed, further adjust button styling */
+    .controls-container .btn {
+      /* If Bootstrap's default styling conflicts with current requirements, override padding */
+      padding: 0.3em 0.8em;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Top Navigation -->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">Tony Wu</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/jobs/">Projects</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/blogs/">Blogs</a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link d-flex align-items-center justify-content-end"
+                data-bs-toggle="collapse"
+                data-bs-target="#toolsCollapse"
+                role="button"
+                aria-expanded="false"
+                aria-controls="toolsCollapse"
+                style="gap: 0.3rem;"
+              >
+                Tools
+                <i class="bi bi-chevron-down"></i>
+              </a>
+              <div class="collapse" id="toolsCollapse">
+                <ul class="list-unstyled text-end" style="padding-right: 1rem;">
+                  <li class="submenu-item">
+                    <a href="/crowns/" class="nav-link p-0">
+                      Queens Puzzle
+                    </a>
+                  </li>
+                  <!-- Additional tools can be added here -->
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="mailto:zhenxun.wu.23@ucl.ac.uk">Email Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content Area -->
+  <main>
+    <section class="blog-detail-section text-center container" style="padding-top: 100px;">
+      <div class="row py-lg-5 justify-content-center">
+        <div class="col-lg-10 col-md-12">
+          <!-- Display Page Title -->
+          <h1 class="fw-bold mb-4">Queens Puzzle</h1>
+
+          <!-- Control Area -->
+          <div class="mb-3 controls-container">
+            <form method="get" class="d-inline-block">
+              <label class="me-1 fw-bold">Size:</label>
+              <select name="size" class="form-select d-inline-block w-auto me-2">
+                {% for s in available_sizes %}
+                <option value="{{ s }}" {% if s|stringformat:"s" == size_str|stringformat:"s" %} selected {% endif %}>{{ s }}</option>
+                {% endfor %}
+              </select>
+              <label class="me-1 fw-bold">Level:</label>
+              <!-- Level dropdown is dynamically generated by JS -->
+              <select id="levelSelect" name="level" class="form-select d-inline-block w-auto me-2"></select>
+              <button type="submit" class="btn btn-primary">Go</button>
+            </form>
+            <a href="?size={{ size_str }}&level=-1" class="ms-2">
+              <button type="button" class="btn btn-secondary">Random</button>
+            </a>
+          </div>
+
+          <!-- Board Container -->
+          <div class="board-container">
+            <div class="board" id="board"></div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="mt-3">
+            <button id="resetBtn" class="btn btn-danger me-2">Reset</button>
+            <button id="hintBtn" class="btn btn-success me-2">Next Hint</button>
+            <button id="nextLevelBtn" class="btn btn-primary">Next Level</button>
+          </div>
+
+          <!-- Message Area -->
+          <div id="message" class="text-success fw-bold"></div>
+
+          <!-- Add 'How to Play' Instruction Section -->
+          <div class="board-wrapper" style="max-width: 640px; margin: 1em auto; text-align: left;">
+            <h2>How to play</h2>
+            <p>
+              Your goal is to have exactly one 👑 in each row, column, and color region.<br>
+              Tap once to place X and tap twice for 👑. Use X to mark where 👑 cannot be placed.<br>
+              Two 👑 cannot touch each other, not even diagonally.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center py-4" style="background: #343a40; color: #fff;">
+    <div class="container">
+      <p>Connect with me on social media for the latest updates on my work.</p>
+      <a href="https://www.linkedin.com/in/tony-wu-198574137/?locale=en_US" class="btn btn-outline-primary mx-1">LinkedIn</a>
+      <a href="https://github.com/Tony-XLZ" class="btn btn-outline-secondary mx-1">GitHub</a>
+    </div>
+  </footer>
+
+  <!-- JavaScript Scripts -->
+  <script src="{% static 'jquery-3.7.1.min.js' %}"></script>
+  <script src="{% static 'popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+  <script>
+    hljs.highlightAll();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/viewerjs/dist/viewer.min.js"></script>
+  <script>
+    MathJax = {
+      svg: { scale: 1, minScaleAdjust: 0.5 },
+      options: { processHtmlClass: "blog-content" }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Generate Level Dropdown Menu -->
+  <script>
+    function populateLevelSelect() {
+      let levelSelect = document.getElementById('levelSelect');
+      if (!levelSelect) return;
+      levelSelect.innerHTML = "";
+      for (let i = 1; i <= maxLevel; i++) {
+        let opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = i;
+        if (i === currentLevel) { opt.selected = true; }
+        levelSelect.appendChild(opt);
+      }
+    }
+    if (document.readyState !== "loading") {
+      populateLevelSelect();
+    } else {
+      document.addEventListener("DOMContentLoaded", populateLevelSelect);
+    }
+  </script>
+
+  <!-- Queens Puzzle Logic -->
+  <script>
+    /***************** Puzzle Setup *****************/
+    // Board size, passed from backend as a number
+    const N = parseInt("{{ size }}", 10);
+    let currentLevel = parseInt("{{ level|default:'1' }}", 10);
+
+    // Automatically calculate the total number of levels based on the board size
+    let maxLevel;
+    if (N === 4 || N === 5) {
+      maxLevel = 30;
+    } else if (N === 6 || N === 7) {
+      maxLevel = 50;
+    } else if (N >= 8 && N <= 13) {
+      maxLevel = 70;
+    } else {
+      maxLevel = 30;
+    }
+
+    // Use backend data: region_map and queen_board
+    let regionMap = {{ region_map|safe }};
+    let queenBoard = {{ queen_board|safe }};
+
+    // Automatically generate region colors using a Morandi palette, alternating different saturation and lightness for better contrast
+    function generateRegionColors(regionMap) {
+      let colors = {};
+      let uniqueRegions = new Set();
+      for (let r = 0; r < regionMap.length; r++) {
+        for (let c = 0; c < regionMap[r].length; c++) {
+          uniqueRegions.add(regionMap[r][c]);
+        }
+      }
+      uniqueRegions = Array.from(uniqueRegions).sort((a, b) => a - b);
+      const nRegions = uniqueRegions.length;
+      const presets = [
+        { s: 35, l: 65 },
+        { s: 25, l: 70 },
+        { s: 30, l: 75 }
+      ];
+      uniqueRegions.forEach((region, index) => {
+        let hue = Math.floor(360 * index / nRegions);
+        let preset = presets[index % presets.length];
+        colors[region] = `hsl(${hue}, ${preset.s}%, ${preset.l}%)`;
+      });
+      return colors;
+    }
+    let regionColors = generateRegionColors(regionMap);
+
+    // If no queenBoard data is provided, use an empty board as fallback
+    if (!queenBoard) {
+      queenBoard = Array.from({ length: N }, () => Array(N).fill(''));
+    }
+
+    // Initialize board state and message
+    let boardState = Array.from({ length: N }, () => Array(N).fill(''));
+    let crowns = [];
+    let solutionPositions = [];
+    if (queenBoard) {
+      for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+          if (queenBoard[r][c] === 'Q') {
+            solutionPositions.push({ r, c });
+            break;
+          }
+        }
+      }
+    }
+    let hintIndex = 0;
+
+    const boardEl = document.getElementById('board');
+    const messageEl = document.getElementById('message');
+    const resetBtn = document.getElementById('resetBtn');
+    const hintBtn = document.getElementById('hintBtn');
+    const nextLevelBtn = document.getElementById('nextLevelBtn');
+
+    // Store the DOM elements for each cell
+    let cellEls = Array.from({ length: N }, () => Array(N));
+
+    // Record drag state
+    let pointerState = { isDown: false, dragged: false, lastCell: null, startCell: null, action: null };
+
+    /***************** Utility Functions *****************/
+    function getCellRC(e) {
+      const rect = boardEl.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const cellSize = rect.width / N;
+      const c = Math.floor(x / cellSize);
+      const r = Math.floor(y / cellSize);
+      return { r, c };
+    }
+
+    function createBoard() {
+      boardEl.innerHTML = '';
+      boardEl.style.setProperty('--N', N);
+      for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+          let cell = document.createElement('div');
+          cell.classList.add('cell');
+          let rid = regionMap[r][c];
+          cell.style.backgroundColor = regionColors[rid] || '#fff';
+          cell.style.borderTop = (r === 0 || regionMap[r][c] !== regionMap[r - 1]?.[c]) ? '2px solid #000' : '1px solid #000';
+          cell.style.borderLeft = (c === 0 || regionMap[r][c] !== regionMap[r][c - 1]) ? '2px solid #000' : '1px solid #000';
+          cell.style.borderRight = (c === N - 1 || regionMap[r][c] !== regionMap[r][c + 1]) ? '2px solid #000' : '1px solid #000';
+          cell.style.borderBottom = (r === N - 1 || regionMap[r][c] !== regionMap[r + 1]?.[c]) ? '2px solid #000' : '1px solid #000';
+          cellEls[r][c] = cell;
+          boardEl.appendChild(cell);
+        }
+      }
+      boardEl.addEventListener('pointerdown', onPointerDown);
+      boardEl.addEventListener('pointermove', onPointerMove);
+      boardEl.addEventListener('pointerup', onPointerUp);
+      boardEl.addEventListener('pointercancel', onPointerUp);
+    }
+
+    function handleResize() {
+      let oldState = JSON.parse(JSON.stringify(boardState));
+      createBoard();
+      for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+          if (oldState[r][c]) {
+            updateCell(r, c, oldState[r][c], false);
+          }
+        }
+      }
+    }
+
+    function onPointerDown(e) {
+      pointerState.isDown = true;
+      pointerState.dragged = false;
+      let { r, c } = getCellRC(e);
+      if (r == null) return;
+      pointerState.startCell = { r, c };
+      pointerState.lastCell = { r, c };
+      let startValue = boardState[r][c];
+      if (startValue === '') { pointerState.action = "mark"; }
+      else if (startValue === 'X') { pointerState.action = "remove"; }
+      else { pointerState.action = null; }
+    }
+
+    function onPointerMove(e) {
+      if (!pointerState.isDown) return;
+      e.preventDefault();
+      let { r, c } = getCellRC(e);
+      if (r == null) return;
+      if (!pointerState.dragged) {
+        applyDragAction(pointerState.startCell.r, pointerState.startCell.c);
+        pointerState.dragged = true;
+      }
+      let last = pointerState.lastCell;
+      if (last.r !== r || last.c !== c) {
+        applyDragAction(r, c);
+        pointerState.lastCell = { r, c };
+      }
+    }
+
+    function onPointerUp(e) {
+      if (!pointerState.isDown) return;
+      if (!pointerState.dragged && pointerState.startCell) {
+        cycleCell(pointerState.startCell.r, pointerState.startCell.c);
+      }
+      pointerState.isDown = false;
+      pointerState.dragged = false;
+      pointerState.startCell = null;
+      pointerState.lastCell = null;
+      pointerState.action = null;
+    }
+
+    function applyDragAction(r, c) {
+      if (boardState[r][c] === 'C') return;
+      if (pointerState.action === "mark") {
+        if (boardState[r][c] === '') {
+          updateCell(r, c, 'X');
+        }
+      } else if (pointerState.action === "remove") {
+        if (boardState[r][c] === 'X') {
+          updateCell(r, c, '');
+        }
+      }
+    }
+
+    function cycleCell(r, c) {
+      let cur = boardState[r][c];
+      let nxt;
+      if (cur === '') { nxt = 'X'; }
+      else if (cur === 'X') {
+        if (canPlaceCrown(r, c)) { nxt = 'C'; }
+        else { showErrorEffect(r, c); return; }
+      } else if (cur === 'C') { nxt = ''; }
+      updateCell(r, c, nxt);
+    }
+
+    function updateCell(r, c, val, check = true) {
+      let prev = boardState[r][c];
+      let cell = cellEls[r][c];
+      if (prev === 'C' && val !== 'C') {
+        let idx = crowns.findIndex(o => o.r === r && o.c === c);
+        if (idx >= 0) crowns.splice(idx, 1);
+      }
+      if (val === 'C' && check) {
+        if (!canPlaceCrown(r, c)) { showErrorEffect(r, c); return; }
+        crowns.push({ r, c });
+      }
+      boardState[r][c] = val;
+      cell.textContent = '';
+      cell.classList.remove('xmark', 'crown', 'error-stripes');
+      if (val === 'X') {
+        cell.textContent = '✕';
+        cell.classList.add('xmark');
+      } else if (val === 'C') {
+        cell.textContent = '👑';
+        cell.classList.add('crown');
+      }
+      checkIfSolved();
+    }
+
+    function canPlaceCrown(r, c) {
+      for (let cc = 0; cc < N; cc++) {
+        if (boardState[r][cc] === 'C') return false;
+      }
+      for (let rr = 0; rr < N; rr++) {
+        if (boardState[rr][c] === 'C') return false;
+      }
+      let rid = regionMap[r][c];
+      for (let rr = 0; rr < N; rr++) {
+        for (let cc = 0; cc < N; cc++) {
+          if (regionMap[rr][cc] === rid && boardState[rr][cc] === 'C') {
+            return false;
+          }
+        }
+      }
+      for (let pos of crowns) {
+        if (Math.abs(pos.r - r) <= 1 && Math.abs(pos.c - c) <= 1) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function showErrorEffect(r, c) {
+      let cell = cellEls[r][c];
+      cell.classList.add('error-stripes');
+      highlightRowColRegion(r, c, true);
+      setTimeout(() => {
+        cell.classList.remove('error-stripes');
+        highlightRowColRegion(r, c, false);
+      }, 800);
+    }
+
+    function highlightRowColRegion(r, c, on) {
+      for (let cc = 0; cc < N; cc++) {
+        toggleErr(r, cc, on);
+      }
+      for (let rr = 0; rr < N; rr++) {
+        toggleErr(rr, c, on);
+      }
+      let rid = regionMap[r][c];
+      for (let rr = 0; rr < N; rr++) {
+        for (let cc = 0; cc < N; cc++) {
+          if (regionMap[rr][cc] === rid) {
+            toggleErr(rr, cc, on);
+          }
+        }
+      }
+    }
+    function toggleErr(r, c, on) {
+      let cell = cellEls[r][c];
+      if (on) cell.classList.add('error-stripes');
+      else cell.classList.remove('error-stripes');
+    }
+
+    function checkIfSolved() {
+      if (crowns.length !== N) return;
+      for (let r = 0; r < N; r++) {
+        let cnt = 0;
+        for (let c = 0; c < N; c++) {
+          if (boardState[r][c] === 'C') cnt++;
+        }
+        if (cnt !== 1) return;
+      }
+      for (let c = 0; c < N; c++) {
+        let cnt = 0;
+        for (let r = 0; r < N; r++) {
+          if (boardState[r][c] === 'C') cnt++;
+        }
+        if (cnt !== 1) return;
+      }
+      let regionCount = {};
+      for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+          if (boardState[r][c] === 'C') {
+            let rid = regionMap[r][c];
+            regionCount[rid] = (regionCount[rid] || 0) + 1;
+          }
+        }
+      }
+      for (let rid in regionColors) {
+        if (!regionCount[rid] || regionCount[rid] !== 1) return;
+      }
+      messageEl.textContent = "Congratulations! Puzzle solved!";
+    }
+
+    resetBtn.addEventListener('click', () => {
+      boardState = Array.from({ length: N }, () => Array(N).fill(''));
+      crowns = [];
+      messageEl.textContent = '';
+      hintIndex = 0;
+      for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+          let cell = cellEls[r][c];
+          cell.textContent = '';
+          cell.classList.remove('xmark', 'crown', 'error-stripes');
+        }
+      }
+    });
+
+    hintBtn.addEventListener('click', () => {
+      if (!solutionPositions || solutionPositions.length === 0) {
+        alert('No hints available.');
+        return;
+      }
+      if (hintIndex >= solutionPositions.length) {
+        alert('All hints used up.');
+        return;
+      }
+      let { r, c } = solutionPositions[hintIndex];
+      hintIndex++;
+      if (canPlaceCrown(r, c)) {
+        updateCell(r, c, 'C');
+        messageEl.textContent = `Placed crown for hint #${hintIndex}`;
+      } else {
+        showErrorEffect(r, c);
+        alert('Hint position conflicts. Cannot place a crown here.');
+      }
+    });
+
+    // "Next Level" functionality: When the current level reaches maxLevel, automatically switch to the next board size (available_sizes)
+    function goNextLevel() {
+      let nextLevel, nextSize;
+      if (currentLevel < maxLevel) {
+        nextLevel = currentLevel + 1;
+        nextSize = N;
+      } else {
+        // available_sizes is the list of board sizes passed from the backend (possibly as strings), convert them to numbers
+        let sizes = {{ available_sizes|safe }}.map(Number);
+        let currentSizeIndex = sizes.indexOf(N);
+        if (currentSizeIndex >= 0 && currentSizeIndex < sizes.length - 1) {
+          nextSize = sizes[currentSizeIndex + 1];
+          nextLevel = 1;
+        } else {
+          alert("Congratulations! You have completed all levels!");
+          return;
+        }
+      }
+      window.location.href = "?size=" + nextSize + "&level=" + nextLevel;
+    }
+
+    nextLevelBtn.addEventListener('click', goNextLevel);
+    window.addEventListener('resize', handleResize);
+    createBoard();
+  </script>
+</body>
+</html>

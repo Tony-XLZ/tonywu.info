@@ -21,6 +21,8 @@ import blogs.views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
+
+import tools.views
 from sitemap import StaticViewSitemap, BlogSitemap, ProjectSitemap
 
 sitemaps = {
@@ -43,6 +45,7 @@ urlpatterns = [
     path('blogs/<int:blog_id>/', blogs.views.blog_detail, name="blog_detail"),
     path('blogs/category/<slug:slug>/', blogs.views.category_detail, name='category_detail'),
     path('blogs/tag/<slug:slug>/', blogs.views.tag_detail, name='tag_detail'),
+    path('crowns/', tools.views.puzzle_view, name='crowns_url_name'),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('sitemap.xml', custom_sitemap, {'sitemaps': sitemaps}, name='sitemap'),
 ]
