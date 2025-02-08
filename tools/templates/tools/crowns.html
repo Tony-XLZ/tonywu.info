@@ -98,9 +98,15 @@
       color: #000;
       font-weight: bold;
     }
-    /* Crown color is defined here so that the SVG icon inherits it via currentColor */
+    /* Set a deeper crown color for better contrast */
     .crown {
-      color: #ffa500;
+      color: #000000;
+    }
+    /* Crown icon styling: scale relative to font-size */
+    .crown-icon {
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
     }
     /* Error indication: red diagonal stripes overlay */
     .error-stripes::before {
@@ -290,9 +296,9 @@
           <div class="board-wrapper" style="max-width: 640px; margin: 1em auto; text-align: left;">
             <h2>How to play</h2>
             <p>
-              Your goal is to have exactly one 👑 in each row, column, and color region.<br>
-              Tap once to place X and tap twice for a 👑. Use X to mark where a 👑 cannot be placed.<br>
-              Two 👑 cannot touch each other, not even diagonally.
+              Your goal is to have exactly one crown in each row, column, and color region.<br>
+              Tap once to place X and tap twice for a crown. Use X to mark where a crown cannot be placed.<br>
+              Two crowns cannot touch each other, not even diagonally.
             </p>
           </div>
         </div>
@@ -604,8 +610,8 @@
         cell.textContent = '✕';
         cell.classList.add('xmark');
       } else if (val === 'C') {
-        // Insert the inline SVG crown icon instead of using an emoji.
-        cell.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 220 220">
+        // Insert the inline SVG crown icon.
+        cell.innerHTML = `<svg class="crown-icon" fill="currentColor" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
   <path d="M220,98.865c0-12.728-10.355-23.083-23.083-23.083s-23.083,10.355-23.083,23.083c0,5.79,2.148,11.084,5.681,15.14
 	l-23.862,21.89L125.22,73.002l17.787-20.892l-32.882-38.623L77.244,52.111l16.995,19.962l-30.216,63.464l-23.527-21.544
 	c3.528-4.055,5.671-9.344,5.671-15.128c0-12.728-10.355-23.083-23.083-23.083C10.355,75.782,0,86.137,0,98.865
@@ -651,7 +657,7 @@
       }, 800);
     }
 
-    // Highlight the entire row, column, and region for a given cell.
+    // Highlight the row, column, and region for a given cell.
     function highlightRowColRegion(r, c, on) {
       for (let cc = 0; cc < N; cc++) {
         toggleErr(r, cc, on);
@@ -706,7 +712,7 @@
       messageEl.textContent = "Congratulations! Puzzle solved!";
     }
 
-    // Reset button: clear the board, state, and move history.
+    // Reset button: clear board, state, and move history.
     resetBtn.addEventListener('click', () => {
       boardState = Array.from({ length: N }, () => Array(N).fill(''));
       crowns = [];
@@ -727,7 +733,7 @@
       if (moveHistory.length > 0) {
         const lastMove = moveHistory.pop();
         if (lastMove.group) {
-          // Undo all moves in the group (in reverse order)
+          // If the last move is a group, undo each move in reverse order.
           lastMove.group.reverse().forEach(move => {
             updateCell(move.r, move.c, move.oldValue, true, false);
           });
