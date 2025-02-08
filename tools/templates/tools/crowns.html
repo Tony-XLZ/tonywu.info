@@ -98,6 +98,7 @@
       color: #000;
       font-weight: bold;
     }
+    /* Crown color is defined here so that the SVG icon inherits it via currentColor */
     .crown {
       color: #ffa500;
     }
@@ -290,7 +291,7 @@
             <h2>How to play</h2>
             <p>
               Your goal is to have exactly one 👑 in each row, column, and color region.<br>
-              Tap once to place X and tap twice for 👑. Use X to mark where 👑 cannot be placed.<br>
+              Tap once to place X and tap twice for a 👑. Use X to mark where a 👑 cannot be placed.<br>
               Two 👑 cannot touch each other, not even diagonally.
             </p>
           </div>
@@ -362,10 +363,10 @@
     });
   </script>
 
-  <!-- Queens Puzzle Logic and Undo for Entire Drag Operation -->
+  <!-- Queens Puzzle Logic and Undo for Entire Drag Operation with SVG Crown Icon -->
   <script>
     /***************** Puzzle Setup *****************/
-    // Board size, passed from backend as a number; default level is set to 1 if not provided.
+    // Board size is passed from backend as a number; default level is set to 1 if not provided.
     const N = parseInt("{{ size }}", 10);
     let currentLevel = parseInt("{{ level|default:'1' }}", 10);
 
@@ -518,7 +519,7 @@
       e.preventDefault();
       let { r, c } = getCellRC(e);
       if (r == null) return;
-      // Set the dragged flag before applying the first action so the starting cell update is recorded in the group.
+      // Set dragged flag before applying the first action so starting cell is recorded.
       if (!pointerState.dragged) {
         pointerState.dragged = true;
         applyDragAction(pointerState.startCell.r, pointerState.startCell.c);
@@ -579,9 +580,8 @@
     // Modified updateCell: record the previous state for undo if recordHistory is true.
     function updateCell(r, c, val, check = true, recordHistory = true) {
       let prev = boardState[r][c];
-      // Record the previous state only if the value is changing.
+      // Record previous state only if the value changes.
       if (recordHistory && prev !== val) {
-        // If a drag operation is in progress, record the move in currentDragMoves.
         if (pointerState.isDown && pointerState.dragged) {
           currentDragMoves.push({ r: r, c: c, oldValue: prev });
         } else {
@@ -598,13 +598,19 @@
         crowns.push({ r: r, c: c });
       }
       boardState[r][c] = val;
-      cell.textContent = '';
+      cell.textContent = ''; // Clear any existing content
       cell.classList.remove('xmark', 'crown', 'error-stripes');
       if (val === 'X') {
         cell.textContent = '✕';
         cell.classList.add('xmark');
       } else if (val === 'C') {
-        cell.textContent = '👑';
+        // Insert the inline SVG crown icon instead of using an emoji.
+        cell.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 220 220">
+  <path d="M220,98.865c0-12.728-10.355-23.083-23.083-23.083s-23.083,10.355-23.083,23.083c0,5.79,2.148,11.084,5.681,15.14
+	l-23.862,21.89L125.22,73.002l17.787-20.892l-32.882-38.623L77.244,52.111l16.995,19.962l-30.216,63.464l-23.527-21.544
+	c3.528-4.055,5.671-9.344,5.671-15.128c0-12.728-10.355-23.083-23.083-23.083C10.355,75.782,0,86.137,0,98.865
+	c0,11.794,8.895,21.545,20.328,22.913l7.073,84.735H192.6l7.073-84.735C211.105,120.41,220,110.659,220,98.865z"/>
+</svg>`;
         cell.classList.add('crown');
       }
       checkIfSolved();
@@ -645,7 +651,7 @@
       }, 800);
     }
 
-    // Highlight the row, column, and region for a given cell.
+    // Highlight the entire row, column, and region for a given cell.
     function highlightRowColRegion(r, c, on) {
       for (let cc = 0; cc < N; cc++) {
         toggleErr(r, cc, on);
@@ -716,12 +722,12 @@
       }
     });
 
-    // Undo button: undo the entire drag operation if one occurred; otherwise, undo the last move.
+    // Undo button: if a drag operation occurred, undo the entire group; otherwise, undo the last move.
     document.getElementById('undoBtn').addEventListener('click', () => {
       if (moveHistory.length > 0) {
         const lastMove = moveHistory.pop();
         if (lastMove.group) {
-          // If the last move is a group (from a drag), undo each move in reverse order.
+          // Undo all moves in the group (in reverse order)
           lastMove.group.reverse().forEach(move => {
             updateCell(move.r, move.c, move.oldValue, true, false);
           });
@@ -793,6 +799,18 @@
         });
       }
     });
+  </script>
+
+  <!-- Prevent double-tap zoom on mobile devices -->
+  <script>
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+      const now = new Date().getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
   </script>
 </body>
 </html>
