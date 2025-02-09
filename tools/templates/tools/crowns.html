@@ -192,6 +192,10 @@
       padding: 0.3em 0.8em;
       vertical-align: middle;
     }
+    /* Added CSS for hint highlight effect */
+    .hint-highlight {
+      box-shadow: 0 0 0 3px #FFD700 !important;
+    }
   </style>
 </head>
 <body>
@@ -436,7 +440,8 @@
         }
       }
     }
-    let hintIndex = 0;
+    // Remove hintIndex since it's not used in revised hint logic.
+    let currentHintCell = null;
 
     const boardEl = document.getElementById('board');
     const messageEl = document.getElementById('message');
@@ -606,6 +611,8 @@
       boardState[r][c] = val;
       cell.textContent = ''; // Clear any existing content
       cell.classList.remove('xmark', 'crown', 'error-stripes');
+      // Remove any hint highlight if cell is updated.
+      cell.classList.remove('hint-highlight');
       if (val === 'X') {
         cell.textContent = '✕';
         cell.classList.add('xmark');
@@ -710,6 +717,9 @@
         if (!regionCount[rid] || regionCount[rid] !== 1) return;
       }
       messageEl.textContent = "Congratulations! Puzzle solved!";
+      // Disable hint button upon puzzle completion.
+      hintBtn.disabled = true;
+      hintBtn.classList.add('disabled');
     }
 
     // Reset button: clear board, state, and move history.
@@ -717,7 +727,12 @@
       boardState = Array.from({ length: N }, () => Array(N).fill(''));
       crowns = [];
       messageEl.textContent = '';
-      hintIndex = 0;
+      // Remove any hint highlights
+      for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+          cellEls[r][c].classList.remove('hint-highlight');
+        }
+      }
       moveHistory = []; // Clear move history on reset.
       for (let r = 0; r < N; r++) {
         for (let c = 0; c < N; c++) {
@@ -726,6 +741,9 @@
           cell.classList.remove('xmark', 'crown', 'error-stripes');
         }
       }
+      // Re-enable hint button if it was disabled
+      hintBtn.disabled = false;
+      hintBtn.classList.remove('disabled');
     });
 
     // Undo button: if a drag operation occurred, undo the entire group; otherwise, undo the last move.
@@ -745,25 +763,49 @@
       }
     });
 
-    // Hint button: place a crown at the hint position.
+    // Revised Hint button logic:
     hintBtn.addEventListener('click', () => {
-      if (!solutionPositions || solutionPositions.length === 0) {
-        alert('No hints available.');
-        return;
+      // Remove any existing hint highlight from all cells.
+      for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+          cellEls[r][c].classList.remove('hint-highlight');
+        }
       }
-      if (hintIndex >= solutionPositions.length) {
-        alert('All hints used up.');
-        return;
+      // If puzzle is already solved, disable hint.
+      if (crowns.length === N) {
+          alert('Puzzle solved. No hints available.');
+          hintBtn.disabled = true;
+          hintBtn.classList.add('disabled');
+          return;
       }
-      let { r, c } = solutionPositions[hintIndex];
-      hintIndex++;
-      if (canPlaceCrown(r, c)) {
-        updateCell(r, c, 'C');
-        messageEl.textContent = `Placed crown for hint #${hintIndex}`;
-      } else {
-        showErrorEffect(r, c);
-        alert('Hint position conflicts. Cannot place a crown here.');
+      // First, check for any incorrectly placed crown.
+      for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+          if (boardState[r][c] === 'C') {
+            // Check if this crown is in the solution positions.
+            let isCorrect = solutionPositions.some(pos => pos.r === r && pos.c === c);
+            if (!isCorrect) {
+              cellEls[r][c].classList.add('hint-highlight');
+              messageEl.textContent = 'Incorrect crown placement. Please fix the highlighted cell.';
+              return; // Stop here.
+            }
+          }
+        }
       }
+      // If no incorrect crowns, then provide a hint for a missing crown.
+      for (let i = 0; i < solutionPositions.length; i++) {
+        let { r, c } = solutionPositions[i];
+        if (boardState[r][c] !== 'C') {
+          cellEls[r][c].classList.add('hint-highlight');
+          messageEl.textContent = 'Hint: Place a crown in the highlighted cell.';
+          currentHintCell = cellEls[r][c];
+          return;
+        }
+      }
+      // If all solution positions already have crowns, then the puzzle might be solved.
+      messageEl.textContent = 'All crowns are correctly placed!';
+      hintBtn.disabled = true;
+      hintBtn.classList.add('disabled');
     });
 
     // "Next Level" functionality: if current level reaches maxLevel, switch to the next board size.
