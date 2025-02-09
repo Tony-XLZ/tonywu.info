@@ -1,8 +1,8 @@
-import os
 import json
+import os
 import random
+
 from django.shortcuts import render
-from django.http import HttpResponse
 
 # Assume maps.json is in the same directory as views.py; otherwise, change to an absolute path
 JSON_FILE_PATH = os.path.join(os.path.dirname(__file__), 'maps.json')
