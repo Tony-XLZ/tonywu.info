@@ -809,6 +809,9 @@
             if (!isCorrect) {
               cellEls[r][c].classList.add('hint-error');  // Use red highlight for errors.
               messageEl.textContent = 'Incorrect crown placement. Please fix the highlighted cell.';
+              // Change message text to red using Bootstrap classes.
+              messageEl.classList.remove('text-success');
+              messageEl.classList.add('text-danger');
               return; // Stop here.
             }
           }
@@ -820,11 +823,16 @@
         if (boardState[r][c] !== 'C') {
           cellEls[r][c].classList.add('hint-highlight');  // Gold highlight for missing crown.
           messageEl.textContent = 'Hint: Place a crown in the highlighted cell.';
+          // Use green text (or your preferred color) for a regular hint.
+          messageEl.classList.remove('text-danger');
+          messageEl.classList.add('text-success');
           return;
         }
       }
       // If all solution positions already have crowns, then the puzzle might be solved.
       messageEl.textContent = 'All crowns are correctly placed!';
+      messageEl.classList.remove('text-danger');
+      messageEl.classList.add('text-success');
       hintBtn.disabled = true;
       hintBtn.classList.add('disabled');
     });
