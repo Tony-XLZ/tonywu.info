@@ -193,8 +193,30 @@
       vertical-align: middle;
     }
     /* Added CSS for hint highlight effect */
-    .hint-highlight {
-      box-shadow: 0 0 0 3px #FFD700 !important;
+    .hint-highlight::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border: 3px solid #FFD700; /* Gold border */
+      pointer-events: none;
+      box-sizing: border-box;
+      z-index: 10;
+    }
+
+    .hint-error::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border: 3px solid #FF0000; /* Red border */
+      pointer-events: none;
+      box-sizing: border-box;
+      z-index: 10;
     }
   </style>
 </head>
@@ -763,12 +785,12 @@
       }
     });
 
-    // Revised Hint button logic:
+    // Hint button logic:
     hintBtn.addEventListener('click', () => {
-      // Remove any existing hint highlight from all cells.
+      // Remove any existing hint highlight/error from all cells.
       for (let r = 0; r < N; r++) {
         for (let c = 0; c < N; c++) {
-          cellEls[r][c].classList.remove('hint-highlight');
+          cellEls[r][c].classList.remove('hint-highlight', 'hint-error');
         }
       }
       // If puzzle is already solved, disable hint.
@@ -782,10 +804,10 @@
       for (let r = 0; r < N; r++) {
         for (let c = 0; c < N; c++) {
           if (boardState[r][c] === 'C') {
-            // Check if this crown is in the solution positions.
+            // Check if this crown is in one of the solution positions.
             let isCorrect = solutionPositions.some(pos => pos.r === r && pos.c === c);
             if (!isCorrect) {
-              cellEls[r][c].classList.add('hint-highlight');
+              cellEls[r][c].classList.add('hint-error');  // Use red highlight for errors.
               messageEl.textContent = 'Incorrect crown placement. Please fix the highlighted cell.';
               return; // Stop here.
             }
@@ -796,9 +818,8 @@
       for (let i = 0; i < solutionPositions.length; i++) {
         let { r, c } = solutionPositions[i];
         if (boardState[r][c] !== 'C') {
-          cellEls[r][c].classList.add('hint-highlight');
+          cellEls[r][c].classList.add('hint-highlight');  // Gold highlight for missing crown.
           messageEl.textContent = 'Hint: Place a crown in the highlighted cell.';
-          currentHintCell = cellEls[r][c];
           return;
         }
       }
