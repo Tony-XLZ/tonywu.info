@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "jobs",
     "blogs",
     "tools",
+    "photos",
     "ckeditor",
     "ckeditor_uploader",
     "django.contrib.sitemaps",
