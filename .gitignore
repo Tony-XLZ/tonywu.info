@@ -8,7 +8,15 @@ media/images/
 media/blog_images/
 media/uploads/
 
-blogs/migrations
-jobs/migrations
-
 .env
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# IDE
+.idea/
+.vscode/
+
+# Django local files
+*.log
