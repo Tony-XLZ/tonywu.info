@@ -13,6 +13,8 @@ media/uploads/
 # Python cache
 __pycache__/
 *.py[cod]
+.venv/
+.local/
 
 # IDE
 .idea/
@@ -20,5 +22,8 @@ __pycache__/
 
 # Django local files
 *.log
+AGENTS.md
+Portfolio_with_Django/local_settings.py
+
 # Django collectstatic output
 /static/
