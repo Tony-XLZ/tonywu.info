@@ -1,0 +1,129 @@
+.navbar .site-nav {
+  align-items: center;
+  gap: 0.35rem;
+  text-align: left;
+}
+
+.navbar .site-nav > .nav-item {
+  margin-left: 0;
+}
+
+.navbar .site-nav .nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0.5rem 0.65rem;
+  border-radius: 6px;
+}
+
+.navbar .site-nav .nav-link:hover,
+.navbar .site-nav .nav-link:focus {
+  background: rgba(13, 110, 253, 0.08);
+}
+
+.navbar .site-nav .dropdown-toggle::after {
+  margin-left: 0.35rem;
+}
+
+.navbar .site-dropdown-menu {
+  min-width: 15rem;
+  padding: 0.4rem;
+  border-color: rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.14);
+}
+
+.navbar .site-dropdown-item {
+  display: flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0.45rem 0.65rem;
+  border-radius: 6px;
+  color: #212529;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.navbar .site-dropdown-item:hover,
+.navbar .site-dropdown-item:focus {
+  background: #f1f5ff;
+  color: #0d6efd;
+}
+
+.navbar .site-dropdown-parent {
+  font-weight: 600;
+}
+
+.navbar .site-dropdown-child {
+  padding-left: 1.45rem;
+  color: #5f6b78;
+  font-size: 0.95rem;
+}
+
+.navbar .site-dropdown-child::before {
+  content: "";
+  width: 4px;
+  height: 4px;
+  margin-right: 0.55rem;
+  border-radius: 50%;
+  background: #adb5bd;
+  flex: 0 0 auto;
+}
+
+.navbar .site-dropdown-divider {
+  margin: 0.3rem 0.2rem;
+  border-top: 1px solid #e9ecef;
+}
+
+@media (min-width: 992px) {
+  .navbar .site-dropdown-menu {
+    margin-top: 0.45rem;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .navbar .site-nav {
+    align-items: stretch;
+    gap: 0.15rem;
+    padding-top: 0.5rem;
+    text-align: right;
+  }
+
+  .navbar .site-nav .nav-link {
+    justify-content: flex-end;
+    min-height: 36px;
+    padding: 0.45rem 0.25rem;
+  }
+
+  .navbar .site-nav .dropdown-menu {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    padding: 0.15rem 0 0.45rem;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    text-align: right;
+  }
+
+  .navbar .site-dropdown-item {
+    justify-content: flex-end;
+    min-height: 32px;
+    padding: 0.4rem 0.25rem;
+  }
+
+  .navbar .site-dropdown-child {
+    padding-left: 0.25rem;
+    padding-right: 1rem;
+  }
+
+  .navbar .site-dropdown-child::before {
+    display: none;
+  }
+
+  .navbar .site-dropdown-divider {
+    margin-left: auto;
+    width: 8rem;
+  }
+}

@@ -12,6 +12,7 @@
 
   <!-- Bootstrap CSS link -->
   <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/site-nav.css' %}" rel="stylesheet">
 
   <!-- Bootstrap Icons for arrow icons -->
   <link
@@ -193,62 +194,31 @@
 
         <!-- Navigation items on the right -->
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto list-unstyled">
+          <ul class="navbar-nav ms-auto site-nav">
             <!-- Categories navigation with dropdown -->
-            <li class="nav-item">
-              <a
-                class="nav-link d-flex align-items-center justify-content-end"
-                data-bs-toggle="collapse"
-                data-bs-target="#categoriesCollapse"
-                role="button"
-                aria-expanded="false"
-                aria-controls="categoriesCollapse"
-                style="gap: 0.3rem;"
-              >
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Categories
-                <i class="bi bi-chevron-down"></i>
               </a>
-              <!-- Submenu dropdown for categories -->
-              <div class="collapse" id="categoriesCollapse">
-                <ul class="list-unstyled text-end" style="padding-right: 1rem;">
-                  {% for category in categories %}
-                  <li class="submenu-item">
-                    <div class="d-flex align-items-center justify-content-end">
-                      <!-- Category link -->
-                      <a href="{{ category.get_absolute_url }}" class="nav-link p-0 me-1">
-                        {{ category.name }}
-                      </a>
-                      <!-- Dropdown for subcategories, if available -->
-                      {% if category.subcategories.all %}
-                      <a
-                        class="nav-link p-0"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#subcat{{ category.id }}"
-                        aria-expanded="false"
-                        aria-controls="subcat{{ category.id }}"
-                        style="line-height: 1; color: inherit;"
-                      >
-                        <i class="bi bi-chevron-down"></i>
-                      </a>
-                      {% endif %}
-                    </div>
-                    {% if category.subcategories.all %}
-                    <div class="collapse" id="subcat{{ category.id }}" style="padding-right: 1rem;">
-                      <ul class="list-unstyled text-end">
-                        {% for subcat in category.subcategories.all %}
-                        <li class="submenu-item">
-                          <a href="{{ subcat.get_absolute_url }}" class="nav-link p-0">
-                            {{ subcat.name }}
-                          </a>
-                        </li>
-                        {% endfor %}
-                      </ul>
-                    </div>
-                    {% endif %}
-                  </li>
-                  {% endfor %}
-                </ul>
-              </div>
+              <ul class="dropdown-menu dropdown-menu-end site-dropdown-menu" aria-labelledby="categoriesDropdown">
+                {% for category in categories %}
+                <li>
+                  <a href="{{ category.get_absolute_url }}" class="site-dropdown-item site-dropdown-parent">
+                    {{ category.name }}
+                  </a>
+                </li>
+                {% for subcat in category.subcategories.all %}
+                <li>
+                  <a href="{{ subcat.get_absolute_url }}" class="site-dropdown-item site-dropdown-child">
+                    {{ subcat.name }}
+                  </a>
+                </li>
+                {% endfor %}
+                {% if not forloop.last %}
+                <li><hr class="site-dropdown-divider"></li>
+                {% endif %}
+                {% endfor %}
+              </ul>
             </li>
 
             <!-- Other menu items (Home, Projects, Blogs, Email Me) -->
@@ -261,35 +231,15 @@
             <li class="nav-item">
               <a class="nav-link" href="/blogs/">Blogs</a>
             </li>
-            <li class="nav-item">
-              <a
-                class="nav-link d-flex align-items-center justify-content-end"
-                data-bs-toggle="collapse"
-                data-bs-target="#toolsCollapse"
-                role="button"
-                aria-expanded="false"
-                aria-controls="toolsCollapse"
-                style="gap: 0.3rem;"
-              >
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Tools
-                <i class="bi bi-chevron-down"></i>
               </a>
-              <div class="collapse" id="toolsCollapse">
-                <ul class="list-unstyled text-end" style="padding-right: 1rem;">
-                  <li class="submenu-item">
-                    <a href="/crowns/" class="nav-link p-0">
-                      Queens Puzzle
-                    </a>
-                  </li>
-                  <!-- add more tools in the future：
-                  <li class="submenu-item">
-                    <a href="/other-tool/" class="nav-link p-0">
-                      Other Tool
-                    </a>
-                  </li>
-                  -->
-                </ul>
-              </div>
+              <ul class="dropdown-menu dropdown-menu-end site-dropdown-menu" aria-labelledby="toolsDropdown">
+                <li>
+                  <a class="site-dropdown-item" href="/crowns/">Queens Puzzle</a>
+                </li>
+              </ul>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="mailto:zhenxun.wu.23@ucl.ac.uk">Email Me</a>

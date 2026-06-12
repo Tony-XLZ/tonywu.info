@@ -11,6 +11,7 @@
 
     <link rel="canonical" href="{{ request.build_absolute_uri }}">
     <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/site-nav.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 
     <!-- Favicons -->
@@ -146,10 +147,9 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto site-nav">
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'home' %}">Home</a>
-              </li>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="/jobs/">Projects</a>
@@ -157,35 +157,15 @@
               <li class="nav-item">
                 <a class="nav-link" href="/blogs/">Blogs</a>
               </li>
-              <li class="nav-item">
-                <a
-                  class="nav-link d-flex align-items-center justify-content-end"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#toolsCollapse"
-                  role="button"
-                  aria-expanded="false"
-                  aria-controls="toolsCollapse"
-                  style="gap: 0.3rem;"
-                >
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Tools
-                  <i class="bi bi-chevron-down"></i>
                 </a>
-                <div class="collapse" id="toolsCollapse">
-                  <ul class="list-unstyled text-end" style="padding-right: 1rem;">
-                    <li class="submenu-item">
-                      <a href="/crowns/" class="nav-link p-0">
-                        Queens Puzzle
-                      </a>
-                    </li>
-                    <!-- add more tools in the future：
-                    <li class="submenu-item">
-                      <a href="/other-tool/" class="nav-link p-0">
-                        Other Tool
-                      </a>
-                    </li>
-                    -->
-                  </ul>
-                </div>
+                <ul class="dropdown-menu dropdown-menu-end site-dropdown-menu" aria-labelledby="toolsDropdown">
+                  <li>
+                    <a class="site-dropdown-item" href="/crowns/">Queens Puzzle</a>
+                  </li>
+                </ul>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="mailto:zhenxun.wu.23@ucl.ac.uk">Email Me</a>
