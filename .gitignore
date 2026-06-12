@@ -20,3 +20,5 @@ __pycache__/
 
 # Django local files
 *.log
+# Django collectstatic output
+/static/
