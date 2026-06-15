@@ -1,202 +1,709 @@
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="light">
 {% load static %}
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Explore Tony Wu's professional portfolio, showcasing projects in web development, data analytics, and more.">
+    <meta name="description" content="Tony Wu's portfolio across finance, data visualization, software projects, writing, and photography.">
     <meta name="author" content="Tony Wu">
-    <meta name="generator" content="Hugo 0.122.0">
-    <title>Tony Wu's Portfolio</title>
+    <title>Tony Wu | Portfolio</title>
 
     <link rel="canonical" href="https://tonywu.info/">
-    <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/site-nav.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 
-    <!-- AOS animation library CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"/>
-
-    <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
     <link rel="manifest" href="{% static 'site.webmanifest' %}">
-    <link rel="mask-icon" href="{% static 'safari-pinned-tab.svg' %}" color="F8F9FAFF">
+    <link rel="mask-icon" href="{% static 'safari-pinned-tab.svg' %}" color="#F6F8F5">
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
-    <meta name="theme-color" content="F8F9FAFF">
+    <meta name="theme-color" content="#F6F8F5">
 
     <style>
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
+      :root {
+        --paper: #f6f8f5;
+        --surface: #ffffff;
+        --ink: #101820;
+        --muted: #59645f;
+        --line: #dbe3dd;
+        --mineral: #245c73;
+        --lichen: #6f8f63;
+        --brass: #c98a32;
+        --slate: #26313a;
+        --soft-shadow: 0 18px 45px rgba(22, 34, 31, 0.12);
       }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
-        display: flex;
-        flex-direction: column;
         min-height: 100vh;
+        margin: 0;
+        background:
+          linear-gradient(90deg, rgba(16, 24, 32, 0.035) 1px, transparent 1px) 0 0 / 64px 64px,
+          linear-gradient(180deg, rgba(16, 24, 32, 0.03) 1px, transparent 1px) 0 0 / 64px 64px,
+          var(--paper);
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        letter-spacing: 0;
       }
+
+      body::selection {
+        background: rgba(201, 138, 50, 0.28);
+      }
+
       main {
-        flex: 1;
-      }
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-      @media (max-width: 992px) {
-        .navbar-nav {
-          text-align: right;
-        }
-      }
-      .nav-scroller .nav {
-        display: flex;
-        flex-wrap: nowrap;
-        padding-bottom: 1rem;
-        margin-top: -1px;
-        overflow-x: auto;
-        text-align: center;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
-      }
-      .bd-mode-toggle {
-        z-index: 1500;
-      }
-      .bd-mode-toggle .dropdown-menu .active .bi {
-        display: block !important;
+        overflow: hidden;
       }
 
-      /* About Me: Maintain white/light background */
-      .wrapper-about {
-        background-color: #fff;
-      }
-      .hero-section {
-        background-size: cover;
-        background-position: center;
-        color: #fff;
-        padding: 60px 0;
-        text-align: center;
-      }
-      .profile-image {
-        border-radius: 50%;
-        border: 5px solid #fff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-      @media (max-width: 768px) {
-        .lead {
-          font-size: 1rem;
-        }
-      }
-
-      /* Lower section: Maintain original light gray background */
-      .wrapper-rest {
-        position: relative;
-        background-color: #f8f9fa;
-      }
-
-      .card-img-top {
-        height: 200px;
-        object-fit: cover;
-      }
-      .card-link {
-        text-decoration: none;
+      a {
         color: inherit;
       }
-      .card-link:hover .card {
-        transform: scale(1.05);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-      }
-      .more-button {
-        background-color: rgb(63, 113, 250);
-        border: none;
-        color: #ffffff;
-        padding: 10px 20px;
-        margin-top: 20px;
-        text-transform: none;
-        font-weight: normal;
-        transition: background-color 0.3s ease;
-      }
-      .more-button:hover {
-        background-color: rgb(143, 172, 255);
-        color: #ffffff;
+
+      .home-nav {
+        background: rgba(246, 248, 245, 0.92) !important;
+        border-bottom: 1px solid rgba(16, 24, 32, 0.08);
+        box-shadow: none !important;
+        backdrop-filter: blur(14px);
       }
 
-      footer {
-        flex-shrink: 0;
-        background: #343a40;
+      .home-nav .navbar-brand {
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+
+      .home-nav .nav-link {
+        color: #29343d;
+        font-size: 0.94rem;
+        font-weight: 650;
+      }
+
+      .home-nav .nav-link:hover,
+      .home-nav .nav-link:focus {
+        background: rgba(36, 92, 115, 0.1);
+        color: var(--mineral);
+      }
+
+      .home-hero {
+        position: relative;
+        padding: clamp(6rem, 11vw, 8.25rem) 0 clamp(3.5rem, 7vw, 5.25rem);
+      }
+
+      .home-hero::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        width: min(1120px, calc(100% - 32px));
+        height: 1px;
+        transform: translateX(-50%);
+        background: linear-gradient(90deg, transparent, var(--line), transparent);
+      }
+
+      .hero-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.8fr);
+        gap: clamp(2rem, 7vw, 5rem);
+        align-items: center;
+      }
+
+      .hero-copy {
+        max-width: 720px;
+      }
+
+      .hero-title {
+        margin: 0;
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(4.1rem, 13vw, 9.75rem);
+        font-weight: 700;
+        line-height: 0.82;
+        letter-spacing: 0;
+      }
+
+      .hero-title span {
+        display: block;
+      }
+
+      .hero-statement {
+        max-width: 660px;
+        margin: 1.65rem 0 0;
+        color: #27333c;
+        font-size: clamp(1.18rem, 2.4vw, 1.7rem);
+        line-height: 1.35;
+        font-weight: 520;
+      }
+
+      .hero-body {
+        max-width: 600px;
+        margin: 1.15rem 0 0;
+        color: var(--muted);
+        font-size: 1.02rem;
+        line-height: 1.8;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.85rem;
+        margin-top: 2rem;
+      }
+
+      .field-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        padding: 0.72rem 1.08rem;
+        border: 1px solid var(--ink);
+        border-radius: 4px;
+        background: var(--ink);
         color: #fff;
-        padding: 20px 0;
-        width: 100%;
-      }
-      footer a {
-        color: #ffffff;
-      }
-      footer a.btn {
-        background-color: #ffffff;
-        color: #343a40;
-        border: none;
-      }
-      footer a.btn-outline-primary:hover {
-        background-color: #3867c0;
-      }
-      footer a.btn-outline-secondary:hover {
-        background-color: #28a745;
-      }
-      footer .btn-outline-primary,
-      footer .btn-outline-secondary {
-        padding: 10px 20px;
-        margin: 10px 5px;
+        font-size: 0.94rem;
+        font-weight: 700;
+        line-height: 1;
+        text-decoration: none;
+        transition: transform 180ms ease, background-color 180ms ease, color 180ms ease, border-color 180ms ease;
       }
 
-      /* Limit the maximum width of the chart container and maintain proper height */
-      .chart-container {
-        width: 100%;
-        max-width: 900px;
-        margin: 0 auto;
-        background: #fff;
-        border-radius: 10px;
-        padding: 1rem 2rem;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      .field-button:hover,
+      .field-button:focus {
+        transform: translateY(-2px);
+        background: var(--mineral);
+        border-color: var(--mineral);
+        color: #fff;
       }
-      .chart-container canvas {
-        width: 100%;
-        height: auto;
+
+      .field-button.secondary {
+        background: transparent;
+        color: var(--ink);
       }
-      @media (max-width: 768px) {
-        .chart-container {
-          padding: 1rem;
+
+      .field-button.secondary:hover,
+      .field-button.secondary:focus {
+        background: rgba(36, 92, 115, 0.1);
+        color: var(--mineral);
+      }
+
+      .hero-media {
+        position: relative;
+      }
+
+      .portrait-frame {
+        position: relative;
+        max-width: 430px;
+        margin-left: auto;
+        aspect-ratio: 1;
+        border-radius: 6px;
+        overflow: hidden;
+        background: var(--slate);
+        box-shadow: var(--soft-shadow);
+      }
+
+      .portrait-frame img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: saturate(0.92) contrast(1.03);
+      }
+
+      .portrait-frame::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: 1px solid rgba(255, 255, 255, 0.38);
+        pointer-events: none;
+      }
+
+      .field-notes {
+        position: relative;
+        display: grid;
+        gap: 0.65rem;
+        max-width: 430px;
+        margin: 1rem 0 0 auto;
+        padding: 0.2rem 0 0 1.25rem;
+        border-left: 2px solid var(--brass);
+      }
+
+      .field-note {
+        display: grid;
+        grid-template-columns: 6.4rem minmax(0, 1fr);
+        gap: 0.8rem;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid rgba(16, 24, 32, 0.08);
+      }
+
+      .field-note:last-child {
+        border-bottom: 0;
+      }
+
+      .field-note span {
+        color: var(--mineral);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .field-note strong {
+        color: var(--ink);
+        font-size: 0.96rem;
+        font-weight: 720;
+        line-height: 1.35;
+      }
+
+      .section-band {
+        position: relative;
+        padding: clamp(3.4rem, 7vw, 5.5rem) 0;
+      }
+
+      .section-band.dark {
+        background: var(--ink);
+        color: #f6f8f5;
+      }
+
+      .section-layout {
+        display: grid;
+        grid-template-columns: minmax(130px, 0.24fr) minmax(0, 1fr);
+        gap: clamp(1.5rem, 5vw, 4.5rem);
+        align-items: start;
+      }
+
+      .trace-label {
+        position: sticky;
+        top: 88px;
+        display: grid;
+        gap: 0.8rem;
+        color: var(--mineral);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.76rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .trace-label::before {
+        content: "";
+        width: 1px;
+        height: 84px;
+        background: var(--brass);
+      }
+
+      .dark .trace-label {
+        color: #9dc4c1;
+      }
+
+      .section-heading {
+        max-width: 720px;
+        margin-bottom: clamp(1.75rem, 4vw, 2.6rem);
+      }
+
+      .section-heading h2 {
+        margin: 0;
+        color: inherit;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(2.25rem, 6vw, 4.8rem);
+        font-weight: 700;
+        line-height: 0.98;
+      }
+
+      .section-heading p {
+        max-width: 620px;
+        margin: 1rem 0 0;
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.75;
+      }
+
+      .dark .section-heading p {
+        color: #b7c4bf;
+      }
+
+      .work-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .work-card {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        min-height: 100%;
+        overflow: hidden;
+        border: 1px solid rgba(16, 24, 32, 0.08);
+        border-radius: 8px;
+        background: var(--surface);
+        color: inherit;
+        text-decoration: none;
+        box-shadow: 0 1px 0 rgba(16, 24, 32, 0.04);
+        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+      }
+
+      .work-card:hover,
+      .work-card:focus {
+        transform: translateY(-4px);
+        border-color: rgba(36, 92, 115, 0.28);
+        color: inherit;
+        box-shadow: var(--soft-shadow);
+      }
+
+      .work-card img {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+      }
+
+      .work-card-body {
+        display: grid;
+        align-content: space-between;
+        gap: 1.5rem;
+        padding: 1rem;
+      }
+
+      .work-card-title {
+        margin: 0;
+        color: var(--ink);
+        font-size: 1rem;
+        font-weight: 720;
+        line-height: 1.4;
+      }
+
+      .card-meta {
+        color: var(--mineral);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .section-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        width: fit-content;
+        margin-top: 1.5rem;
+        color: var(--mineral);
+        font-size: 0.95rem;
+        font-weight: 760;
+        text-decoration: none;
+      }
+
+      .section-link::after {
+        content: "";
+        width: 2.2rem;
+        height: 1px;
+        background: currentColor;
+        transition: width 180ms ease;
+      }
+
+      .section-link:hover::after,
+      .section-link:focus::after {
+        width: 3.2rem;
+      }
+
+      .writing-list {
+        display: grid;
+        border-top: 1px solid var(--line);
+      }
+
+      .writing-row {
+        display: grid;
+        grid-template-columns: minmax(7rem, 0.18fr) minmax(0, 1fr) auto;
+        gap: 1rem;
+        align-items: center;
+        min-height: 86px;
+        padding: 1.15rem 0;
+        border-bottom: 1px solid var(--line);
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .writing-row:hover,
+      .writing-row:focus {
+        color: var(--mineral);
+      }
+
+      .writing-date {
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.78rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .writing-title {
+        margin: 0;
+        color: inherit;
+        font-size: clamp(1.2rem, 2.7vw, 1.8rem);
+        font-weight: 720;
+        line-height: 1.2;
+      }
+
+      .writing-arrow {
+        color: var(--brass);
+        font-size: 1.4rem;
+        line-height: 1;
+      }
+
+      .photo-grid-home {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr 0.9fr;
+        grid-auto-rows: 180px;
+        gap: 0.75rem;
+      }
+
+      .photo-tile {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        border-radius: 8px;
+        background: #dce3df;
+        color: #fff;
+        text-decoration: none;
+      }
+
+      .photo-tile:first-child {
+        grid-row: span 2;
+      }
+
+      .photo-tile img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 240ms ease;
+      }
+
+      .photo-tile::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 35%, rgba(16, 24, 32, 0.68));
+      }
+
+      .photo-tile span {
+        position: absolute;
+        left: 1rem;
+        right: 1rem;
+        bottom: 0.9rem;
+        z-index: 1;
+        font-weight: 720;
+        line-height: 1.25;
+      }
+
+      .photo-tile:hover img,
+      .photo-tile:focus img {
+        transform: scale(1.045);
+      }
+
+      .chart-panel {
+        display: grid;
+        grid-template-columns: minmax(0, 0.85fr) minmax(260px, 0.36fr);
+        gap: clamp(1.5rem, 4vw, 3rem);
+        align-items: center;
+      }
+
+      .chart-frame {
+        min-height: 360px;
+        padding: clamp(1rem, 3vw, 1.5rem);
+        border: 1px solid rgba(246, 248, 245, 0.12);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .chart-frame canvas {
+        width: 100% !important;
+        height: 320px !important;
+      }
+
+      .time-notes {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .time-note {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(246, 248, 245, 0.16);
+      }
+
+      .time-note span {
+        display: block;
+        margin-bottom: 0.35rem;
+        color: #9dc4c1;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.74rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .time-note strong {
+        display: block;
+        color: #fff;
+        font-size: 1.05rem;
+        line-height: 1.45;
+      }
+
+      .empty-note {
+        margin: 0;
+        padding: 1rem;
+        border: 1px dashed var(--line);
+        border-radius: 8px;
+        color: var(--muted);
+      }
+
+      .site-footer {
+        padding: 2rem 0;
+        background: #f0f4f0;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+      }
+
+      .footer-inner {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .footer-inner p {
+        margin: 0;
+      }
+
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .footer-links a {
+        color: var(--ink);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .footer-links a:hover,
+      .footer-links a:focus {
+        color: var(--mineral);
+      }
+
+      @media (max-width: 991.98px) {
+        .hero-layout,
+        .section-layout,
+        .chart-panel {
+          grid-template-columns: 1fr;
         }
-        .chart-container canvas {
-          height: 250px;
+
+        .trace-label {
+          position: static;
+          display: flex;
+          align-items: center;
+        }
+
+        .trace-label::before {
+          width: 56px;
+          height: 1px;
+        }
+
+        .portrait-frame,
+        .field-notes {
+          margin-left: 0;
+        }
+
+        .work-grid,
+        .photo-grid-home {
+          grid-template-columns: 1fr;
+        }
+
+        .photo-grid-home {
+          grid-auto-rows: 260px;
+        }
+
+        .photo-tile:first-child {
+          grid-row: span 1;
         }
       }
 
-      .chart-description {
-        text-align: center;
-        font-size: 0.9rem;
-        line-height: 1.5;
-        margin: 1rem auto;
-        max-width: 700px;
+      @media (max-width: 575.98px) {
+        .home-hero {
+          padding-top: 4.9rem;
+          padding-bottom: 0.45rem;
+        }
+
+        .hero-title {
+          font-size: clamp(3.6rem, 21vw, 4.7rem);
+        }
+
+        .hero-statement {
+          font-size: 1.12rem;
+        }
+
+        .hero-body {
+          font-size: 0.96rem;
+          line-height: 1.62;
+        }
+
+        .portrait-frame {
+          max-width: 170px;
+          margin: 1.2rem auto 0;
+        }
+
+        .field-notes {
+          display: none;
+        }
+
+        .hero-actions,
+        .footer-inner {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .field-button {
+          width: 100%;
+        }
+
+        .field-note {
+          grid-template-columns: 1fr;
+          gap: 0.2rem;
+        }
+
+        .writing-row {
+          grid-template-columns: 1fr auto;
+        }
+
+        .writing-date {
+          grid-column: 1 / -1;
+        }
+
+        .chart-frame canvas {
+          height: 260px !important;
+        }
       }
 
-      @media (max-width: 768px) {
-        .chart-description {
-          font-size: 0.8rem;
-          line-height: 1.4;
-          margin: 0.5rem auto;
-          padding: 0 1rem;
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
         }
       }
     </style>
-
   </head>
+
   <body>
     <header>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+      <nav class="navbar navbar-expand-lg navbar-light fixed-top home-nav">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">Tony Wu</a>
+          <a class="navbar-brand" href="{% url 'home' %}">Tony Wu</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                   aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -207,10 +714,13 @@
                 <a class="nav-link" href="#about">About</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/jobs/">Projects</a>
+                <a class="nav-link" href="{% url 'jobs_list' %}">Projects</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/blogs/">Blogs</a>
+                <a class="nav-link" href="{% url 'blogs_list' %}">Blogs</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'photos_list' %}">Photos</a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -218,7 +728,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end site-dropdown-menu" aria-labelledby="toolsDropdown">
                   <li>
-                    <a class="site-dropdown-item" href="/crowns/">Queens Puzzle</a>
+                    <a class="site-dropdown-item" href="{% url 'crowns_url_name' %}">Queens Puzzle</a>
                   </li>
                 </ul>
               </li>
@@ -232,206 +742,316 @@
     </header>
 
     <main>
-      <!-- Upper section: About Me (white background) -->
-      <div class="wrapper-about">
-        <section class="hero-section" id="about" data-aos="fade-in" data-aos-duration="1500">
-          <div class="container">
-            <div class="row py-5">
-              <div class="col-lg-6 col-md-8 mx-auto text-center">
-                <img src="{% static 'tony_0.jpg' %}"
-                     class="profile-image mb-4"
-                     style="max-height: 200px; width: auto;"
-                     alt="Tony Wu"
-                     data-aos="zoom-in"
-                     data-aos-duration="1500">
-                <br/><br/>
-                <h2 class="fw-bold" style="color: #000">About Me</h2>
-                <p class="lead" style="color: #000">
-                  I'm Tony Wu, a recent graduate with degrees in Finance from Queen's University Belfast and Technology Policy from University College London. Experienced as a Financial Assistant in London and a Researcher in China, specializing in data visualization and financial analysis. Proficient in Python, R, SQL, and various data analytics tools, with professional certificates in Data Analytics. Enjoy open source programming, photography and hiking at leisure.
-                </p>
+      <section class="home-hero" id="about">
+        <div class="container">
+          <div class="hero-layout">
+            <div class="hero-copy">
+              <h1 class="hero-title">
+                <span>Tony</span>
+                <span>Wu</span>
+              </h1>
+              <p class="hero-statement">
+                I build data stories, practical web tools, and photographic field notes with a finance and technology-policy lens.
+              </p>
+              <p class="hero-body">
+                Recent graduate in Finance and Technology Policy, with experience across financial analysis, research, Python, SQL, R, visualization, and open-source web projects.
+              </p>
+              <div class="hero-actions">
+                <a class="field-button" href="{% url 'jobs_list' %}">View projects</a>
+                <a class="field-button secondary" href="{% url 'blogs_list' %}">Read writing</a>
               </div>
             </div>
-          </div>
-        </section>
-      </div>
 
-      <!-- Lower section: Light gray background -->
-      <div class="wrapper-rest">
-        <!-- Projects -->
-        <div class="album py-5" id="projects" data-aos="fade-up" data-aos-duration="1000">
-          <div class="container">
-            <h2 class="text-center mb-4">Projects</h2>
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-              {% for job in jobs.all|slice:":3" %}
-              <div class="col" data-aos="flip-left" data-aos-duration="1000">
-                <a href="{% url 'job_detail' job.id %}" class="card-link">
-                  <div class="card shadow-sm">
-                    <img class="card-img-top" src="{{ job.image.url }}" alt="{{ job.summary }}">
-                    <div class="card-body">
-                      <p class="card-text">{{ job.summary }}</p>
-                    </div>
-                  </div>
-                </a>
+            <div class="hero-media">
+              <div class="portrait-frame">
+                <img src="{% static 'tony_0.jpg' %}" alt="Tony Wu">
               </div>
-              {% endfor %}
-            </div>
-            <div class="text-center">
-              <a href="/jobs/" class="btn more-button">More Projects</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Blogs -->
-        <div class="album py-5" id="blogs" data-aos="fade-up" data-aos-duration="1000">
-          <div class="container">
-            <h2 class="text-center mb-4">Blogs</h2>
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-              {% for blog in blogs|slice:":3" %}
-              <div class="col" data-aos="flip-right" data-aos-duration="1000">
-                <a href="{% url 'blog_detail' blog.id %}" class="card-link">
-                  <div class="card shadow-sm">
-                    {% if blog.image %}
-                      <img class="card-img-top" src="{{ blog.image.url }}" alt="{{ blog.title }}">
-                    {% endif %}
-                    <div class="card-body">
-                      <h5 class="card-title">{{ blog.title }}</h5>
-                      <p class="card-text" style="font-size: 0.875rem; color: grey;">{{ blog.published_date|date:"F j, Y" }}</p>
-                    </div>
-                  </div>
-                </a>
-              </div>
-              {% endfor %}
-            </div>
-            <div class="text-center">
-              <a href="/blogs/" class="btn more-button">More Blogs</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Data Visualization -->
-        <div class="album py-5" id="visualization" data-aos="fade-up" data-aos-duration="1500">
-          <div class="container">
-            <h2 class="text-center mb-4">Time</h2>
-            <p class="chart-description">
-              This is how I spend my time.
-              My biggest hobby is learning,
-              as I am curious about almost everything.
-            </p>
-            <div class="row justify-content-center mt-4">
-              <div class="col-md-10 col-lg-8">
-                <!-- Chart container -->
-                <div class="chart-container">
-                  <canvas id="myChart"></canvas>
+              <div class="field-notes" aria-label="Portfolio focus areas">
+                <div class="field-note">
+                  <span>Lens</span>
+                  <strong>Finance, policy, and human-scale data</strong>
+                </div>
+                <div class="field-note">
+                  <span>Tools</span>
+                  <strong>Python, SQL, R, Django, visualization</strong>
+                </div>
+                <div class="field-note">
+                  <span>Practice</span>
+                  <strong>Building, writing, photography, hiking</strong>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div> <!-- wrapper-rest -->
+      </section>
+
+      <section class="section-band" id="projects">
+        <div class="container">
+          <div class="section-layout">
+            <div class="trace-label">Projects</div>
+            <div>
+              <div class="section-heading">
+                <h2>Built work, not just exercises.</h2>
+                <p>Small Django apps, analytics pieces, and practical experiments that turn research questions into something people can open and use.</p>
+              </div>
+
+              {% if jobs %}
+              <div class="work-grid">
+                {% for job in jobs %}
+                <a class="work-card" href="{% url 'job_detail' job.id %}">
+                  <img src="{{ job.image.url }}" alt="{{ job.summary }}" loading="lazy">
+                  <div class="work-card-body">
+                    <h3 class="work-card-title">{{ job.summary }}</h3>
+                    <span class="card-meta">Project</span>
+                  </div>
+                </a>
+                {% endfor %}
+              </div>
+              {% else %}
+              <p class="empty-note">Projects will appear here after they are published.</p>
+              {% endif %}
+              <a class="section-link" href="{% url 'jobs_list' %}">All projects</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-band" id="blogs">
+        <div class="container">
+          <div class="section-layout">
+            <div class="trace-label">Writing</div>
+            <div>
+              <div class="section-heading">
+                <h2>Notes from the desk.</h2>
+                <p>Writing on development, finance, data, and the stray problems that become useful once they are explained clearly.</p>
+              </div>
+
+              {% if blogs %}
+              <div class="writing-list">
+                {% for blog in blogs %}
+                <a class="writing-row" href="{% url 'blog_detail' blog.id %}">
+                  <span class="writing-date">{{ blog.published_date|date:"M j, Y" }}</span>
+                  <h3 class="writing-title">{{ blog.title }}</h3>
+                  <span class="writing-arrow" aria-hidden="true">→</span>
+                </a>
+                {% endfor %}
+              </div>
+              {% else %}
+              <p class="empty-note">Writing will appear here after posts are published.</p>
+              {% endif %}
+              <a class="section-link" href="{% url 'blogs_list' %}">All writing</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {% if photos %}
+      <section class="section-band" id="photos">
+        <div class="container">
+          <div class="section-layout">
+            <div class="trace-label">Photos</div>
+            <div>
+              <div class="section-heading">
+                <h2>Field notes in light.</h2>
+                <p>Photography gives the technical work a second rhythm: observation, patience, framing, and a little luck.</p>
+              </div>
+
+              <div class="photo-grid-home">
+                {% for photo in photos %}
+                <a class="photo-tile" href="{{ photo.get_absolute_url }}">
+                  <img src="{{ photo.image.url }}" alt="{{ photo.display_alt_text }}" loading="lazy">
+                  <span>{{ photo.display_title }}</span>
+                </a>
+                {% endfor %}
+              </div>
+              <a class="section-link" href="{% url 'photos_list' %}">All photos</a>
+            </div>
+          </div>
+        </div>
+      </section>
+      {% endif %}
+
+      <section class="section-band dark" id="visualization">
+        <div class="container">
+          <div class="section-layout">
+            <div class="trace-label">Time</div>
+            <div>
+              <div class="section-heading">
+                <h2>How curiosity moved.</h2>
+                <p>A compact map of how study, coding, photography, games, and family time have shifted through different stages.</p>
+              </div>
+
+              <div class="chart-panel">
+                <div class="chart-frame">
+                  <canvas id="myChart" aria-label="Time allocation by age" role="img"></canvas>
+                </div>
+                <div class="time-notes" aria-label="Time chart notes">
+                  <div class="time-note">
+                    <span>Early signal</span>
+                    <strong>Learning takes the largest share because almost every project starts with a question.</strong>
+                  </div>
+                  <div class="time-note">
+                    <span>Current mix</span>
+                    <strong>Coding and photography now sit beside study as daily creative practice.</strong>
+                  </div>
+                  <div class="time-note">
+                    <span>Constant</span>
+                    <strong>Social and family time stays as the baseline that keeps the work grounded.</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
-    <footer class="text-center py-4">
+    <footer class="site-footer">
       <div class="container">
-        <p>Connect with me on social media for the latest updates on my work.</p>
-        <a href="https://www.linkedin.com/in/tony-wu-198574137/?locale=en_US" class="btn btn-outline-primary mx-1">LinkedIn</a>
-        <a href="https://github.com/Tony-XLZ" class="btn btn-outline-secondary mx-1">GitHub</a>
+        <div class="footer-inner">
+          <p>Connect with me for projects, writing, photography, or a good data problem.</p>
+          <div class="footer-links">
+            <a href="https://www.linkedin.com/in/tony-wu-198574137/?locale=en_US">LinkedIn</a>
+            <a href="https://github.com/Tony-XLZ">GitHub</a>
+            <a href="mailto:zhenxun.wu.23@ucl.ac.uk">Email</a>
+          </div>
+        </div>
       </div>
     </footer>
 
-    <!-- Required JS -->
     <script src="{% static 'jquery-3.7.1.min.js' %}"></script>
     <script src="{% static 'popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-
-    <!-- AOS Animation Library JS -->
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    <script>
-      AOS.init();
-    </script>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
     <script>
-      const ctx = document.getElementById('myChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: [0, 5, 10, 15, 20, 25],
-          datasets: [
-            {
-              label: 'Study',
-              data: [0, 65, 40, 25, 25, 25],
-              fill: true,
-              backgroundColor: '#B0AFAE',
-              borderColor: '#B0AFAE',
-              tension: 0.4,
-              pointRadius: 0
-            },
-            {
-              label: 'Game',
-              data: [0, 0, 25, 25, 20, 15],
-              fill: true,
-              backgroundColor: '#C5AFA0',
-              borderColor: '#C5AFA0',
-              tension: 0.4,
-              pointRadius: 0
-            },
-            {
-              label: 'Photography',
-              data: [0, 0, 0, 10, 15, 20],
-              fill: true,
-              backgroundColor: '#7E8D85',
-              borderColor: '#7E8D85',
-              tension: 0.4,
-              pointRadius: 0
-            },
-            {
-              label: 'Coding',
-              data: [0, 0, 0, 10, 20, 25],
-              fill: true,
-              backgroundColor: '#6B5B6E',
-              borderColor: '#6B5B6E',
-              tension: 0.4,
-              pointRadius: 0
-            },
-            {
-              label: 'Social or Family',
-              data: [100, 35, 35, 30, 20, 15],
-              fill: true,
-              backgroundColor: '#D7CFC5',
-              borderColor: '#D7CFC5',
-              tension: 0.4,
-              pointRadius: 0
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              title: { display: true, text: 'Age' }
-            },
-            y: {
-              beginAtZero: true,
-              stacked: true,
-              title: { display: true, text: 'Percentage (%)' },
-              ticks: {
-                callback: (val) => val + '%'
+      const chartTarget = document.getElementById('myChart');
+      if (chartTarget && window.Chart) {
+        new Chart(chartTarget.getContext('2d'), {
+          type: 'line',
+          data: {
+            labels: [0, 5, 10, 15, 20, 25],
+            datasets: [
+              {
+                label: 'Study',
+                data: [0, 65, 40, 25, 25, 25],
+                fill: true,
+                backgroundColor: 'rgba(157, 196, 193, 0.24)',
+                borderColor: '#9dc4c1',
+                tension: 0.42,
+                pointRadius: 0,
+                borderWidth: 2
+              },
+              {
+                label: 'Coding',
+                data: [0, 0, 0, 10, 20, 25],
+                fill: true,
+                backgroundColor: 'rgba(201, 138, 50, 0.2)',
+                borderColor: '#c98a32',
+                tension: 0.42,
+                pointRadius: 0,
+                borderWidth: 2
+              },
+              {
+                label: 'Photography',
+                data: [0, 0, 0, 10, 15, 20],
+                fill: true,
+                backgroundColor: 'rgba(111, 143, 99, 0.22)',
+                borderColor: '#9fbd93',
+                tension: 0.42,
+                pointRadius: 0,
+                borderWidth: 2
+              },
+              {
+                label: 'Game',
+                data: [0, 0, 25, 25, 20, 15],
+                fill: true,
+                backgroundColor: 'rgba(127, 141, 155, 0.18)',
+                borderColor: '#9aa8b7',
+                tension: 0.42,
+                pointRadius: 0,
+                borderWidth: 2
+              },
+              {
+                label: 'Social or Family',
+                data: [100, 35, 35, 30, 20, 15],
+                fill: true,
+                backgroundColor: 'rgba(246, 248, 245, 0.12)',
+                borderColor: '#f6f8f5',
+                tension: 0.42,
+                pointRadius: 0,
+                borderWidth: 2
               }
-            }
+            ]
           },
-          plugins: {
-            legend: {
-              display: true,
-              position: 'top',
-              labels: {
-                boxWidth: 12,
-                font: { size: 10 }
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              intersect: false,
+              mode: 'index'
+            },
+            scales: {
+              x: {
+                grid: {
+                  color: 'rgba(246, 248, 245, 0.08)'
+                },
+                ticks: {
+                  color: '#b7c4bf',
+                  font: {
+                    family: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+                    size: 11
+                  }
+                },
+                title: {
+                  display: true,
+                  text: 'Age',
+                  color: '#d7dfdc'
+                }
+              },
+              y: {
+                beginAtZero: true,
+                stacked: true,
+                grid: {
+                  color: 'rgba(246, 248, 245, 0.08)'
+                },
+                ticks: {
+                  color: '#b7c4bf',
+                  callback: (value) => value + '%'
+                },
+                title: {
+                  display: true,
+                  text: 'Percentage',
+                  color: '#d7dfdc'
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                  boxWidth: 10,
+                  boxHeight: 10,
+                  color: '#d7dfdc',
+                  padding: 18,
+                  font: {
+                    size: 11,
+                    weight: '600'
+                  }
+                }
+              },
+              tooltip: {
+                backgroundColor: '#f6f8f5',
+                titleColor: '#101820',
+                bodyColor: '#26313a',
+                borderColor: '#dbe3dd',
+                borderWidth: 1,
+                displayColors: true
               }
             }
           }
-        }
-      });
+        });
+      }
     </script>
   </body>
 </html>

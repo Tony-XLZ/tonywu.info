@@ -2,13 +2,14 @@ from django.contrib.sitemaps import Sitemap
 from django.shortcuts import reverse
 from blogs.models import Blog
 from jobs.models import Job
+from photos.models import Photo
 
 class StaticViewSitemap(Sitemap):
     priority = 1.0
     changefreq = 'daily'
 
     def items(self):
-        return ['home']
+        return ['home', 'photos_list']
 
     def location(self, item):
         return reverse(item)
@@ -26,3 +27,10 @@ class ProjectSitemap(Sitemap):
 
     def items(self):
         return Job.objects.all()
+
+class PhotoSitemap(Sitemap):
+    priority = 0.6
+    changefreq = 'monthly'
+
+    def items(self):
+        return Photo.objects.filter(is_published=True)

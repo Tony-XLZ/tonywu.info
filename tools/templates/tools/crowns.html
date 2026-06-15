@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="light">
 {% load static %}
 <head>
   <meta charset="utf-8">
@@ -10,7 +10,7 @@
   <title>Queens Puzzle - Tony Wu</title>
 
   <link rel="canonical" href="{{ request.build_absolute_uri }}">
-  <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/site-nav.css' %}" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/monokai.min.css" rel="stylesheet">
@@ -20,9 +20,9 @@
   <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
   <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
   <link rel="manifest" href="{% static 'site.webmanifest' %}">
-  <link rel="mask-icon" href="{% static 'safari-pinned-tab.svg' %}" color="F8F9FAFF">
+  <link rel="mask-icon" href="{% static 'safari-pinned-tab.svg' %}" color="#F6F8F5">
   <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
-  <meta name="theme-color" content="F8F9FAFF">
+  <meta name="theme-color" content="#F6F8F5">
 
   <!-- Viewer.js CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/viewerjs/dist/viewer.min.css">
@@ -235,6 +235,7 @@
       z-index: 10;
     }
   </style>
+    <link href="{% static 'css/site-theme.css' %}" rel="stylesheet">
 </head>
 <body>
   <!-- Top Navigation -->
@@ -257,6 +258,9 @@
             <li class="nav-item">
               <a class="nav-link" href="/blogs/">Blogs</a>
             </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/photos/">Photos</a>
+              </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Tools
@@ -282,7 +286,7 @@
       <div class="row py-lg-5 justify-content-center">
         <div class="col-lg-10 col-md-12">
           <!-- Display the page title -->
-          <h1 class="fw-bold mb-4">Queens Puzzle</h1>
+          <h1 class="fw-bold mb-4" data-label="Tool">Queens Puzzle</h1>
 
           <!-- Control Area -->
           <div class="mb-3 controls-container">

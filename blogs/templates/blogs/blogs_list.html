@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="light">
 {% load static %}
 
 <head>
@@ -7,11 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Tony Wu's Blog List Page" />
   <meta name="author" content="Tony Wu" />
-  <meta name="generator" content="Hugo 0.122.0" />
-  <title>Blogs</title>
+  <title>Writing - Tony Wu</title>
 
   <!-- Bootstrap CSS link -->
-  <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
     <link href="{% static 'css/site-nav.css' %}" rel="stylesheet">
 
   <!-- Bootstrap Icons for arrow icons -->
@@ -51,14 +50,14 @@
   <link
     rel="mask-icon"
     href="{% static 'safari-pinned-tab.svg' %}"
-    color="F8F9FAFF"
+    color="#F6F8F5"
   />
   <link
     rel="icon"
     href="{% static 'favicon.ico' %}"
     type="image/x-icon"
   />
-  <meta name="theme-color" content="F8F9FAFF" />
+  <meta name="theme-color" content="#F6F8F5" />
 
   <style>
     /* Basic layout settings */
@@ -167,6 +166,7 @@
       margin: 10px 5px;
     }
   </style>
+    <link href="{% static 'css/site-theme.css' %}" rel="stylesheet">
 </head>
 
 <body>
@@ -231,6 +231,9 @@
             <li class="nav-item">
               <a class="nav-link" href="/blogs/">Blogs</a>
             </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/photos/">Photos</a>
+              </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Tools
@@ -259,7 +262,7 @@
           <!-- Primary content on the left -->
           <div class="col-md-8">
             <!-- Center title within column -->
-            <h2 class="text-center mb-4">Blogs</h2>
+            <h2 class="text-center mb-4" data-label="Writing">Blogs</h2>
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
               {% for blog in page_obj %}
               <div class="col">
@@ -281,7 +284,7 @@
                         {{ blog.published_date|date:"F j, Y" }}
                       </p>
                       <p class="card-text">
-                        {{ blog.summary|truncatewords:20 }}
+                        {{ blog.content|striptags|truncatewords:20 }}
                       </p>
                     </div>
                   </div>
@@ -350,7 +353,7 @@
           <!-- Tag cloud on the right -->
           <div class="col-md-4">
             <!-- Center title within column -->
-            <h2 class="text-center mb-4">Tag Cloud</h2>
+            <h2 class="text-center mb-4 tag-cloud-title" data-label="Tags">Tag Cloud</h2>
             <div class="tag-cloud-section" style="margin-bottom: 1rem;">
               <div id="tag-cloud-app" style="width: 100%; height: 525px; border: 1px solid #ccc;">
                 <div

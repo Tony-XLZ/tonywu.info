@@ -1,19 +1,18 @@
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="light">
 {% load static %}
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Blogs tagged with {{ tag.name }}" />
     <meta name="author" content="Tony Wu" />
-    <meta name="generator" content="Hugo 0.122.0" />
-    <title>Blogs Tagged: {{ tag.name }}</title>
+    <title>Blogs tagged {{ tag.name }} - Tony Wu</title>
 
     <!-- Canonical URL for SEO purposes -->
     <link rel="canonical" href="https://tonywu.info/blogs/tag/{{ tag.slug }}" />
 
     <!-- Bootstrap CSS Stylesheet -->
-    <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
     <link href="{% static 'css/site-nav.css' %}" rel="stylesheet">
 
     <!-- Bootstrap Icons Stylesheet -->
@@ -196,6 +195,7 @@
         margin: 10px 5px;
       }
     </style>
+    <link href="{% static 'css/site-theme.css' %}" rel="stylesheet">
   </head>
 
   <body>
@@ -260,6 +260,9 @@
               <li class="nav-item">
                 <a class="nav-link" href="/blogs/">Blogs</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/photos/">Photos</a>
+              </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Tools
@@ -282,7 +285,7 @@
     <main>
       <div class="album py-5 bg-light">
         <div class="container">
-          <h2 class="text-center mb-4">Blogs Tagged: "{{ tag.name }}"</h2>
+          <h2 class="text-center mb-4" data-label="Tag">Blogs Tagged: "{{ tag.name }}"</h2>
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             {% if page_obj %}
               {% for blog in page_obj %}

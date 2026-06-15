@@ -1,16 +1,15 @@
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="light">
 {% load static %}
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Tony Wu's Job List Page">
+    <meta name="description" content="Tony Wu's project portfolio.">
     <meta name="author" content="Tony Wu">
-    <meta name="generator" content="Hugo 0.122.0">
-    <title>Blogs</title>
+    <title>Projects - Tony Wu</title>
 
     <link rel="canonical" href="https://tonywu.info/jobs">
-    <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/site-nav.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 
@@ -19,9 +18,9 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
     <link rel="manifest" href="{% static 'site.webmanifest' %}">
-    <link rel="mask-icon" href="{% static 'safari-pinned-tab.svg' %}" color="F8F9FAFF">
+    <link rel="mask-icon" href="{% static 'safari-pinned-tab.svg' %}" color="#F6F8F5">
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
-    <meta name="theme-color" content="F8F9FAFF">
+    <meta name="theme-color" content="#F6F8F5">
 
     <style>
       html, body {
@@ -140,6 +139,7 @@
       }
     </style>
 
+    <link href="{% static 'css/site-theme.css' %}" rel="stylesheet">
   </head>
   <body>
     <header>
@@ -159,6 +159,9 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="/blogs/">Blogs</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/photos/">Photos</a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -182,7 +185,7 @@
     <main>
       <div class="album py-5 bg-light">
         <div class="container">
-          <h2 class="text-center mb-4">Projects</h2>
+          <h2 class="text-center mb-4" data-label="Projects">Projects</h2>
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             {% for job in jobs %}
             <div class="col">
