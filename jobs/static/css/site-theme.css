@@ -52,9 +52,23 @@ body::selection {
 
 .navbar.fixed-top .nav-link:hover,
 .navbar.fixed-top .nav-link:focus,
-.navbar.fixed-top .nav-link.active {
-  background: rgba(36, 92, 115, 0.1);
-  color: var(--mineral);
+.navbar.fixed-top .nav-link.active,
+.navbar.fixed-top .nav-link.show {
+  background: rgba(36, 92, 115, 0.1) !important;
+  color: var(--mineral) !important;
+}
+
+.navbar.fixed-top .site-dropdown-menu a.site-dropdown-item {
+  color: var(--ink) !important;
+  text-decoration: none !important;
+}
+
+.navbar.fixed-top .site-dropdown-menu a.site-dropdown-item:hover,
+.navbar.fixed-top .site-dropdown-menu a.site-dropdown-item:focus,
+.navbar.fixed-top .site-dropdown-menu a.site-dropdown-item:active {
+  background: rgba(36, 92, 115, 0.1) !important;
+  color: var(--mineral) !important;
+  text-decoration: none !important;
 }
 
 main {
