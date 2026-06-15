@@ -299,6 +299,12 @@ main {
   text-align: left !important;
 }
 
+.job-detail-section h1 {
+  max-width: 900px;
+  font-size: clamp(1.85rem, 3.7vw, 3.15rem);
+  line-height: 1.08;
+}
+
 .blog-detail-section .row,
 .job-detail-section .row {
   justify-content: flex-start;
@@ -406,6 +412,11 @@ footer a {
   .job-detail-section h1,
   .blog-detail-section h1 {
     font-size: clamp(2.2rem, 13vw, 3.4rem);
+  }
+
+  .job-detail-section h1 {
+    font-size: clamp(1.65rem, 9vw, 2.35rem);
+    line-height: 1.12;
   }
 
   .photo-grid {
